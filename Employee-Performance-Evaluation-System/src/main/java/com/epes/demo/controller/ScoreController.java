@@ -29,7 +29,7 @@ public class ScoreController {
 
     @PostMapping(value = "/addScore")
     @ResponseBody
-    public Map<String,String> addScpre(PerformanceScore score){
+    public int addScpre(PerformanceScore score){
         return scoreService.addScore(score);
     }
 

@@ -5,6 +5,7 @@ import com.epes.demo.service.DepartmentService;
 import com.epes.demo.tool.SearchParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,8 @@ import java.util.Map;
 @Controller
 public class DepartmentController {
     private final DepartmentService departmentService;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     public DepartmentController(DepartmentService departmentService) {
@@ -75,5 +78,13 @@ public class DepartmentController {
     @ResponseBody
     public Map<String, String> addDept(Department department){
         return departmentService.addDepartment(department);
+    }
+
+    @GetMapping(value = "/findDeptUsers")
+    @ResponseBody
+    public List<Map<String, Object>> findDeptUsers(String id){
+        String sql = "select id,name,d.name deptName from demo_user_info u left join demo_department d on u.deptid = d.id where deptid = ?";
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql,new Object[]{id});
+        return list;
     }
 }

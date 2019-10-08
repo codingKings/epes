@@ -41,6 +41,7 @@ public class LoginController {
     public Map<String, Object> login(String loginname,String password,HttpSession session){
         Map<String, Object> respons = userInfoService.login(loginname,password);
         session.setAttribute("userid", respons.get("userid"));
+        session.setAttribute("username", respons.get("name"));
         return respons;
     }
 

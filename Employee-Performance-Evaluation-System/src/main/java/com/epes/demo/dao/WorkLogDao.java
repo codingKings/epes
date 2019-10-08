@@ -29,6 +29,9 @@ public interface WorkLogDao {
     @Select("select * from demo_worklog where userid = #{userid} ")
     List<WorkLog> findLogByUserid(String userid);
 
+    @Select("select * from demo_worklog where pojid = #{pojid} and logDate = #{date} ")
+    WorkLog findLogByDate(@Param("pojid") String pojId,@Param("date")String date);
+
     @Select("SELECT\n" +
             "demo_worklog.id AS id,\n" +
             "demo_worklog.content AS content,\n" +

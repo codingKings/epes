@@ -24,18 +24,17 @@ public class PerformanceScore extends BaseEntity{
     @Column(name = "id", type = MySqlTypeConstant.CHAR, isKey = true, length = 36)
     private String id ;
 
-    @Column(name = "startdate", type = MySqlTypeConstant.DATETIME)
-    private String startdate;
+    @Column(name = "progressScore", type = MySqlTypeConstant.VARCHAR,isNull = false)
+    private String progressScore;
 
-    @Column(name = "enddate", type = MySqlTypeConstant.DATETIME)
-    private String enddate;
+    @Column(name = "qualityScore", type = MySqlTypeConstant.VARCHAR,isNull = false)
+    private String qualityScore;
 
-    @Column(name = "score", type = MySqlTypeConstant.INT,isNull = false)
-    private String score;
-
-    @Column(name = "review", type = MySqlTypeConstant.VARCHAR)
-    private String review;
-
+    /**
+     * 类型：0为自评；1为他评
+     */
+    @Column(name = "type", type = MySqlTypeConstant.VARCHAR,isNull = false)
+    private String type;
 
     @Column(name = "createtime", type = MySqlTypeConstant.DATETIME)
     private String createtime;
@@ -47,18 +46,17 @@ public class PerformanceScore extends BaseEntity{
     private Integer dr;
 
     /**
-     * 关联被评人
+     * 关联日志
      */
-    @Column(name = "empid", type = MySqlTypeConstant.VARCHAR)
-    private String empid;
-
-    private String empName;
+    @Column(name = "logid", type = MySqlTypeConstant.VARCHAR,isNull = false)
+    private String logid;
 
     /**
      * 关联评分人
      */
-    @Column(name = "leaderid", type = MySqlTypeConstant.VARCHAR)
-    private String leaderid;
+    @Column(name = "userid", type = MySqlTypeConstant.VARCHAR)
+    private String userid;
 
-    private String leaderName;
+    @Column(name = "username", type = MySqlTypeConstant.VARCHAR)
+    private String username;
 }

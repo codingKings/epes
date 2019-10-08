@@ -27,11 +27,20 @@ public class WorkLog extends BaseEntity{
     @Column(name = "id", type = MySqlTypeConstant.CHAR, isKey = true, length = 36)
     private String id;
 
-    @Column(name = "workdate", type = MySqlTypeConstant.DATETIME)
-    private String workdate;
+    /**
+     * 进展情况
+     */
+    @Column(name = "progress", type = MySqlTypeConstant.TEXT, isNull = false)
+    private String progress;
 
-    @Column(name = "content", type = MySqlTypeConstant.TEXT, isNull = false)
-    private String content;
+    /**
+     * 问题及原因
+     */
+    @Column(name = "question", type = MySqlTypeConstant.TEXT, isNull = false)
+    private String question;
+
+    @Column(name = "logDate", type = MySqlTypeConstant.VARCHAR)
+    private String logDate;
 
     @Column(name = "createtime", type = MySqlTypeConstant.DATETIME)
     private String createtime;

@@ -34,18 +34,23 @@ public class PerformanceScoreService {
      * @return
      */
     @Transactional
-    public Map<String,String> addScore(PerformanceScore performanceScore){
+    public int addScore(PerformanceScore performanceScore){
         Map<String, String> result = new HashMap<>(0);
         performanceScore.setId(UUID.randomUUID().toString());
-        int i = baseService.insert(performanceScore);
-        if (i>0){
-            result.put("success","success");
-            result.put("msg","评分成功");
-        }else {
-            result.put("success","error");
-            result.put("msg","评分失败,无法连接数据库");
-        }
-        return result;
+        return baseService.insert(performanceScore);
+    }
+
+    /**
+     * 修改评分
+     * @param performanceScore
+     * @return
+     */
+    public int update(PerformanceScore performanceScore){
+        return baseService.update(performanceScore);
+    }
+
+    public PerformanceScore findScoreByUserOfLog(String userid,String logid){
+        return scoreDao.findScoreByUserOfLog(userid,logid);
     }
 
     /** 查看评分

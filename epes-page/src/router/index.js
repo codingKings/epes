@@ -15,6 +15,7 @@ import ShowLog from "@/components/Performance/ShowLog"
 import Project from "@/components/Project/Index"
 import PojModifiy from "@/components/Project/Modifiy"
 import AddPoj from "@/components/Project/AddPoj"
+import ShowPoj from "@/components/Project/Show"
 import WorkLog from "@/components/WorkLog/Index"
 import LogModifiy from "@/components/WorkLog/Modifiy"
 import AddLog from "@/components/WorkLog/AddLog"
@@ -100,6 +101,11 @@ export default new Router({
       path: "/AddPoj",
       name: "AddPoj",
       component: AddPoj
+    },
+    {
+      path: "/ShowPoj",
+      name: "ShowPoj",
+      component: ShowPoj
     },
     {
       path: "/WorkLog",

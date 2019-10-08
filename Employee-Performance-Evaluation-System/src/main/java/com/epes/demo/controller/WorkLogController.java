@@ -1,8 +1,13 @@
 package com.epes.demo.controller;
 
+import com.epes.demo.entity.PerformanceScore;
+import com.epes.demo.entity.UserInfo;
 import com.epes.demo.entity.WorkLog;
 import com.epes.demo.service.BaseService;
+import com.epes.demo.service.PerformanceScoreService;
+import com.epes.demo.service.UserInfoService;
 import com.epes.demo.service.WorkLogService;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -10,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -27,11 +33,15 @@ public class WorkLogController {
 
     private final WorkLogService workLogService;
     private final BaseService baseService;
+    private final UserInfoService userInfoService;
+    private final PerformanceScoreService scoreService;
 
     @Autowired
-    public WorkLogController(WorkLogService workLogService, BaseService baseService) {
+    public WorkLogController(WorkLogService workLogService, BaseService baseService, UserInfoService userInfoService, PerformanceScoreService scoreService) {
         this.workLogService = workLogService;
         this.baseService = baseService;
+        this.userInfoService = userInfoService;
+        this.scoreService = scoreService;
     }
 
   /*  @PostMapping(value = "/showLog")
@@ -94,11 +104,7 @@ public class WorkLogController {
     @PostMapping(value = "/findLogByid")
     @ResponseBody
     public WorkLog findLogById(String id){
-        WorkLog workLog = workLogService.findById(id);
-        String date = workLog.getWorkdate().substring(0,10);
-        System.out.println(date);
-        workLog.setWorkdate(date);
-        return workLog;
+        return workLogService.findById(id);
     }
 
     @PostMapping(value = "/update")
@@ -115,7 +121,52 @@ public class WorkLogController {
 
     @PostMapping(value = "/addLog")
     @ResponseBody
-    public Map<String,String> addLog(WorkLog workLog){
-        return workLogService.addWorkLog(workLog);
+    public Map<String,String> addLog(String userid,String pojid,String pojname,String progress,String question,String progressScore,String qualityScore){
+
+        Map<String,String> result = new HashMap<>();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
+
+        UserInfo user = userInfoService.findUser(userid);
+        WorkLog workLog = new WorkLog();
+
+        workLog.setPojid(pojid);
+        workLog.setPojname(pojname);
+        workLog.setUserid(user.getId());
+        workLog.setUsernmae(user.getName());
+        workLog.setProgress(progress);
+        workLog.setQuestion(question);
+
+        workLog.setLogDate(df.format(new Date()));
+        //保存自评
+        PerformanceScore score = new PerformanceScore();
+        score.setType("0");
+        score.setProgressScore(progressScore);
+        score.setQualityScore(qualityScore);
+        score.setUserid(user.getId());
+        score.setUsername(user.getName());
+
+
+        //获取当前月份
+        String nowDate = df.format(new Date());
+        //查询是否有日志
+        WorkLog oldLog =  workLogService.findByData(pojid,nowDate);
+
+        if (oldLog == null){
+            //新增
+            workLog.setId(String.valueOf(UUID.randomUUID()));
+            score.setLogid(workLog.getId());
+            scoreService.addScore(score);
+            result = workLogService.addWorkLog(workLog);
+        } else {
+            assert false;
+            workLog.setId(oldLog.getId());
+            score.setLogid(workLog.getId());
+            //修改
+            scoreService.findScoreByUserOfLog(userid,workLog.getId());
+            scoreService.update(score);
+            result = workLogService.update(workLog);
+        }
+
+        return result;
     }
 }

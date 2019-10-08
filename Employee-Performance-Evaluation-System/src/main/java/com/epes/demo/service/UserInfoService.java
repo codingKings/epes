@@ -161,7 +161,11 @@ public class UserInfoService {
      * 查询单个用户
      */
     public UserInfo findUser(String id){
-        return userInfoDao.findUser(id);
+        UserInfo userInfo = userInfoDao.findUser(id);
+        //查询权限
+        List<UserRole> roles = userRoleDao.findUserRole(id);
+        userInfo.setUserRolesList(roles);
+        return userInfo;
     }
 
 
@@ -191,6 +195,7 @@ public class UserInfoService {
             // 对比用户密码
             if (uPassword.equals(password)){
                 result.put("userid",userInfo.getId());
+                result.put("username",userInfo.getName());
                 result.put("msg","登陆成功！");
                 result.put("success","success");
             } else {
@@ -204,7 +209,8 @@ public class UserInfoService {
         return result;
     }
 
-    /** 获取权限
+
+    /** 获取菜单权限
      * @param userid
      * @return
      */

@@ -10,7 +10,6 @@
             </ol>
           </div>
         </div>
-
         <div class="search">
           <div class="row">
             <div class="col-lg-12">
@@ -24,12 +23,12 @@
                       </label>
                     </div>
 
-                    <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-4">
-                      <span style="margin-top: 5%;color: #5c6e7a;font-weight:bold;">编号:</span>
-                      <label style="margin-top: 5%;">
-                        <input type="text" v-model="code" class="form-control" />
-                      </label>
-                    </div>
+                    <!--<div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-4">-->
+                      <!--<span style="margin-top: 5%;color: #5c6e7a;font-weight:bold;">编号:</span>-->
+                      <!--<label style="margin-top: 5%;">-->
+                        <!--<input type="text" v-model="code" class="form-control" />-->
+                      <!--</label>-->
+                    <!--</div>-->
                     <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-4">
                       <span style="margin-top: 5%;color: #5c6e7a;font-weight:bold;">科室:</span>
                       <label style="margin-top: 5%;">
@@ -56,7 +55,10 @@
                       <button type="button" style="margin-top: 5%;" class="btn btn-primary" @click="refresh">
                         <i class="fa fa-refresh"></i> 刷新
                       </button>
-                      <button type="button" style="margin-top: 5%;" class="btn btn-success" @click="addDept">
+
+
+                      <!--<button v-if="role == 1" type="button" style="margin-top: 5%;" class="btn btn-success" @click="addDept">-->
+                        <button type="button" style="margin-top: 5%;" class="btn btn-success" @click="addDept">
                         <i class="fa fa-plus"></i> 新建
                       </button>
                     </div>
@@ -68,12 +70,18 @@
           </div>
         </div>
         <div class="row">
+          <div v-if="pojs.length == 0" style="color: #000000;margin-left: 3%;">
+            未查找到相应任务
+          </div>
           <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6" v-for="poj in pojs" :key="poj.id">
             <div class="main-box clearfix profile-box-contact">
               <div class="main-box-body clearfix">
                 <div class="profile-box-header gray-bg clearfix">
-                  <h2>任务名称：{{ poj.name }}</h2><br/>>
-                  <h2>编  号：{{ poj.code }}</h2>
+                  <h2>任务名称：{{ poj.name }}</h2><br/>
+                  <h5 >任务类型：
+                    <label v-if="poj.type == 0" style="color:greenyellow;">年度任务</label>
+                    <label v-if="poj.type == 1" style="color:yellow;">月度任务</label>
+                  </h5>
                   <ul class="contact-details">
                     <li>
                       <i class="fa fa-eye"></i> 开始时间：{{ poj.startdate }}
@@ -81,16 +89,16 @@
                     <li>
                       <i class="fa fa-eye-slash"></i> 结束时间：{{ poj.enddate }}
                     </li>
-                    <li > <!-- v-if="" -->
-                      <i class="fa fa-phone"></i> 所属科室：{{ poj.deptname }}
+                    <li> <!-- v-if="" -->
+                      <i class="fa fa-flag"></i> 执 行 人 ：{{ poj.userName }}
                     </li>
                   </ul>
                 </div>
                 <div class="profile-box-footer clearfix">
                   <div class="margin-10" style="margin-left:5%;">
-                    <button type="button" class="btn btn-primary " @click="modifiy(poj.id)">
+                    <button type="button" class="btn btn-primary " @click="show(poj.id)">
                       <i class="fa fa-wrench"></i>
-                      编辑
+                      查看详情
                     </button>
                     <button type="button" class="btn btn-default " @click="disabled(poj.id,1)" v-if="poj.dr==0">
                       <i class="fa fa-times"></i>
@@ -131,7 +139,8 @@
     data() {
       return {
         msg:"",
-        userinfo: [],
+        // userinfo: [],
+        userId : '',
         name:'',
         deptId:'',
         code:'',
@@ -140,13 +149,21 @@
         deptModel:[],
         pojs:[],
         poj:[],
-        dept:[]
+        dept:[],
+        role: 0
       }
     },
     mounted: function () {
+      //查找是否有新增权限
+      var roles = sessionStorage.getItem("user_role");
+      console.log(roles);
+      if (roles.indexOf("01")!= -1){
+        this.role = 1;
+      }
       this.$nextTick(function () {
         this.init();
       });
+
     },
     methods: {
       init: function () {
@@ -155,7 +172,9 @@
       },
       getPojs: function () {
         const that = this;
-        const data = {
+        this.userId = sessionStorage.getItem("userid");
+        console.log(this.userId);
+        var data = {
           'pageIndex':0,
           'size':20,
           'searchMap':{
@@ -165,6 +184,9 @@
             'dr': this.dr
           }
         };
+        if (this.role !=1){
+          data.searchMap.userid = this.userId;
+        }
         that.$http.post(global.appCtx + '/projct/findAll',data).then(function (response) {
           this.pojs = response.data;
         },function (error) {
@@ -204,6 +226,12 @@
       modifiy: function (id) {
         this.$router.push({
           path: '/PojModifiy',
+          query: { pojid: id }
+        });
+      },
+      show: function(id){
+        this.$router.push({
+          path: '/ShowPoj',
           query: { pojid: id }
         });
       },

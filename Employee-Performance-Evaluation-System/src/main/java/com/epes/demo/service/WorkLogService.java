@@ -4,6 +4,7 @@ import com.epes.demo.dao.WorkLogDao;
 import com.epes.demo.entity.Department;
 import com.epes.demo.entity.WorkLog;
 import com.epes.demo.tool.SearchParams;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,10 @@ public class WorkLogService {
     @Transactional
     public Map<String, String> addWorkLog(WorkLog workLog){
         Map<String, String> result = new HashMap<>(0);
-        workLog.setId(UUID.randomUUID().toString());
+        if (StringUtils.isBlank(workLog.getId())){
+            workLog.setId(UUID.randomUUID().toString());
+        }
+
         int p = baseService.insert(workLog);
         if (p>0){
             result.put("success","success");
@@ -101,5 +105,9 @@ public class WorkLogService {
 
     public List<WorkLog> findByUserId(String userid, String pojid, String startdate, String enddate){
         return workLogDao.findLogByUserId(userid,pojid,startdate,enddate);
+    }
+
+    public WorkLog findByData(String pojId,String date) {
+        return workLogDao.findLogByDate(pojId,date);
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
 * @author 程龙
@@ -70,5 +71,10 @@ public class UserInfo extends BaseEntity implements Serializable {
 
     @Column(name = "dr",type = MySqlTypeConstant.INT)
     private Integer dr;
+
+
+    //用于关联用户权限
+    List<UserRole> userRolesList;
+
 
 }

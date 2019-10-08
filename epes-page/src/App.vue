@@ -349,6 +349,7 @@
           this.userid= userid;
         } else {
          sessionStorage.setItem('userid',this.$route.query.id);
+         // sessionStorage.setItem('username',this.$route.query.name);
          this.getUserInfo(userid);
          this.userid = userid;
         }
@@ -361,6 +362,15 @@
         that.$http.post('http://localhost:8080/UserInfo/findUserById',data).then(function (response) {
           this.userInfo = response.data;
           sessionStorage.setItem('user_dept',this.userInfo.deptid);
+          var roles = this.userInfo.userRolesList;
+          var role = '';
+          if (roles != null && roles != undefined){
+            for(var i = 0;i< roles.length; i++){
+              role += roles[i].roleid.toString()+",";
+            }
+          }
+          //保存权限
+          sessionStorage.setItem("user_role",role);
         },function (error) {
           console.log(error);
         });
@@ -379,6 +389,8 @@
       exit:function () {
         sessionStorage.removeItem("userid");
         sessionStorage.removeItem("user_dept");
+        sessionStorage.removeItem('user_role');
+        // sessionStorage.removeItem('username');
         window.location.href = "http://localhost:8080/";
       }
     },

@@ -25,6 +25,11 @@ import java.util.Date;
 @Table(name = "demo_project")
 public class Project extends BaseEntity {
 
+    //普通权限
+    public static final String MONTH = "1";
+    //超级权限
+    public static final String YEAR = "0";
+
     @Column(name = "id", type = MySqlTypeConstant.CHAR, isKey = true, length = 36)
     private String id;
 
@@ -43,13 +48,41 @@ public class Project extends BaseEntity {
     @Column(name = "deptid", type = MySqlTypeConstant.VARCHAR)
     private String deptid;
 
+    @Column(name = "deptname", type = MySqlTypeConstant.VARCHAR)
     private String deptname;
+
+    @Column(name = "type", type = MySqlTypeConstant.VARCHAR)
+    private String type;
+
+
 
     @Column(name = "createtime", type = MySqlTypeConstant.DATETIME)
     private String createtime;
 
     @Column(name = "modifiedtime", type = MySqlTypeConstant.DATETIME)
     private String modifiedtime;
+
+    /**
+     * 任务所关联的用户
+     */
+    @Column(name = "userId", type = MySqlTypeConstant.VARCHAR)
+    private String userId;
+
+    @Column(name = "userName", type = MySqlTypeConstant.VARCHAR)
+    private String userName;
+
+
+    /**
+     * 任务描述
+     */
+    @Column(name = "content", type = MySqlTypeConstant.TEXT)
+    private String content;
+
+    /**
+     * 任务要求
+     */
+    @Column(name = "demand", type = MySqlTypeConstant.TEXT)
+    private String demand;
 
     @Column(name = "dr",type = MySqlTypeConstant.INT)
     private Integer dr;
