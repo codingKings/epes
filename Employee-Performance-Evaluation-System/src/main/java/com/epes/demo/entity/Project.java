@@ -25,9 +25,11 @@ import java.util.Date;
 @Table(name = "demo_project")
 public class Project extends BaseEntity {
 
-    //普通权限
+    //临时任务
+    public static final String INTERIM = "2";
+    //月度任务
     public static final String MONTH = "1";
-    //超级权限
+    //年度任务
     public static final String YEAR = "0";
 
     @Column(name = "id", type = MySqlTypeConstant.CHAR, isKey = true, length = 36)
@@ -87,4 +89,22 @@ public class Project extends BaseEntity {
     @Column(name = "dr",type = MySqlTypeConstant.INT)
     private Integer dr;
 
+    /**
+     * 任务类型编号
+     */
+    @Column(name = "sub_type_code", type = MySqlTypeConstant.VARCHAR)
+    private String sub_type_code;
+
+    /**
+     * 任务类型名称
+     */
+    @Column(name = "sub_type_name", type = MySqlTypeConstant.VARCHAR)
+    private String sub_type_name;
+
+
+    /**
+     * 存储父级任务类型
+     */
+    private String parent_code;
+    private String parent_name;
 }

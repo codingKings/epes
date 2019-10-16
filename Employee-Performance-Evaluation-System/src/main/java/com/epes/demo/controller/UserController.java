@@ -1,5 +1,6 @@
 package com.epes.demo.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.epes.demo.entity.Department;
 import com.epes.demo.entity.UserInfo;
 import com.epes.demo.entity.UserLogin;
@@ -8,7 +9,6 @@ import com.epes.demo.service.UserInfoService;
 import com.epes.demo.service.UserLoginService;
 import com.epes.demo.tool.Encryption;
 import com.epes.demo.tool.SearchParams;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpRequest;
@@ -49,11 +49,11 @@ public class UserController {
 
     @PostMapping(value = "/findUserBypage")
     @ResponseBody
-    public String findUserBypage(int pageIndex, int size, SearchParams search){
+    public List<Map<String, Object>> findUserBypage(int pageIndex, int size, SearchParams search){
         PageRequest pageRequest = new PageRequest(pageIndex,size);
-        List<Map<String, Object>> response = userInfoService.findAllUsers(pageRequest, search);
+        List<Map<String, Object>> result = userInfoService.findAllUsers(pageRequest, search);
         List<Department> depts = departmentService.findAllDept();
-        for (Map<String, Object> user : response){
+        for (Map<String, Object> user : result){
             String deptid = user.get("deptid").toString();
             for (int i = 0; i<depts.size();i++){
                 if (deptid.equals(depts.get(i).getId())){
@@ -61,8 +61,8 @@ public class UserController {
                 }
             }
         }
-        Gson gson = new Gson();
-        return gson.toJson(response);
+
+        return result;
     }
 
     @PostMapping(value = "/resetPassword")

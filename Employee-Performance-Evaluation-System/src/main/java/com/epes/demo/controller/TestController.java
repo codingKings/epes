@@ -5,7 +5,6 @@ import com.epes.demo.entity.UserInfo;
 import com.epes.demo.service.UserInfoService;
 import com.epes.demo.tool.SearchParams;
 import com.epes.demo.tool.exception.NotTableEntityException;
-import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

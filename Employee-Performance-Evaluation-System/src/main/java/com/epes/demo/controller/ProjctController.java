@@ -2,13 +2,16 @@ package com.epes.demo.controller;
 
 import com.epes.demo.entity.Department;
 import com.epes.demo.entity.Project;
+import com.epes.demo.entity.ProjectType;
 import com.epes.demo.service.BaseService;
 import com.epes.demo.service.DepartmentService;
 import com.epes.demo.service.ProjectService;
 import com.epes.demo.tool.SearchParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,13 +32,15 @@ public class ProjctController {
 
     private final BaseService baseService;
     private final ProjectService projectService;
-    @Autowired
-    private DepartmentService deptService;
+    private final DepartmentService deptService;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public ProjctController(BaseService baseService, ProjectService projectService) {
+    public ProjctController(BaseService baseService, ProjectService projectService, DepartmentService deptService, JdbcTemplate jdbcTemplate) {
         this.baseService = baseService;
         this.projectService = projectService;
+        this.deptService = deptService;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @PostMapping(value = "/findAll")
@@ -118,10 +123,8 @@ public class ProjctController {
                 cal.roll(Calendar.DATE, -1);
                 project.setEnddate(df.format(cal.getTime()));
             } break;
-            default: {
-
-                project.setStartdate(df.format(new Date()));
-            } break;
+            case Project.INTERIM :break;
+            default:
         }
         return projectService.addPorject(project);
     }
@@ -133,4 +136,45 @@ public class ProjctController {
         return baseService.pageFindByCondition(Project.class,pageRequest,searchMap);
     }
 
+    @PostMapping(value = "/findPojByUserId")
+    @ResponseBody
+    public List<Project> findPojByUserId(String userId){
+        //查询所有任务种类(如果有缓存机制，请放到缓存里面)
+        String findPojType = "select code,name from demo_project_type";
+        List<Map<String,Object>> pojTypeList = jdbcTemplate.queryForList(findPojType);
+        //将任务种类封装到Map里面，方便查询；
+        Map<String,String> pojTypeMapper = new HashMap<>();
+        for (Map<String,Object> typeMap : pojTypeList) {
+            String key = String.valueOf(typeMap.get("code"));
+            String value = String.valueOf(typeMap.get("name"));
+            pojTypeMapper.put(key,value);
+        }
+        List<Project> projectList =projectService.findPojByUserId(userId);
+        for (Project poj : projectList){
+            poj.setParent_name(pojTypeMapper.get(poj.getParent_code()));
+        }
+        return projectList;
+    }
+
+
+    /**
+     * 查找所有一级任务种类
+     * @return
+     */
+    @GetMapping(value = "/findAllTopPojType")
+    @ResponseBody
+    public List<ProjectType> findAllTopPojType(){
+        return projectService.findAllTopPojType();
+    }
+
+    /**
+     * 查找子任务种类
+     * @param code
+     * @return
+     */
+    @GetMapping(value = "/findSubPojType")
+    @ResponseBody
+    public List<ProjectType> findSubPojType(String code){
+        return projectService.findSubPojType(code);
+    }
 }

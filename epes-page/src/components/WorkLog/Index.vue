@@ -1,112 +1,163 @@
-<template xmlns="http://www.w3.org/1999/html">
+<template>
   <div id="content-wrapper">
     <div class="row">
-      <div class="col-lg-12">
-        <div class="row">
-          <div class="col-lg-12">
-            <ol class="breadcrumb">
-              <li><a href="indexpage">首页</a></li>
-              <li class="active"><span>绩效管理</span></li>
-            </ol>
-          </div>
-        </div>
-        <div class="search">
-          <div class="row">
-            <div class="col-lg-12">
-              <div class="main-box">
-                <div class="main-body">
-                  <div class="row">
-                    <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-4">
-                      <span style="margin-left:5%;margin-top: 5%;color: #5c6e7a;font-weight:bold;">任务名称:</span>
-                      <label style="margin-top: 5%;">
-                        <input type="text" v-model="name" class="form-control"/>
-                      </label>
-                    </div>
+      <div class="col-lg-12 col-xs-12" v-if="pojs.length <= 0">
+        <label class="col-lg-2 control-label" style="color: red;">未查询到该月的任务列表</label>
+      </div>
+      <div class="col-lg-12" v-for="(poj,index) in pojs">
+        <div class="main-box">
+          <header class="main-box-header clearfix">
+            <h2>任务详情</h2>
+          </header>
+          <div class="main-box-body clearfix">
+            <div class="form-group col-lg-12 col-xs-12">
+              <label class="col-lg-2 control-label">任务名称：</label>
+              <div class="col-lg-10">
+                <h4 style="font-weight: bolder;">{{poj.name}}</h4>
+              </div>
+            </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label class="col-lg-2 control-label">所属科室：</label>
+              <div class="col-lg-10">
+                <label>{{ poj.deptname }}</label>
+              </div>
+            </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label class="col-lg-2 control-label">人员分配：</label>
+              <div class="col-lg-10">
+                <label>{{ poj.userName }}</label>
+              </div>
+            </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label class="col-lg-2 control-label">开始时间：</label>
+              <div class="col-lg-10">
+                <label>{{ poj.startdate }}</label>
+              </div>
+            </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label class="col-lg-2 control-label">结束时间：</label>
+              <div class="col-lg-10">
+                <label>{{ poj.enddate }}</label>
+              </div>
+            </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label
+                class="col-lg-2 control-label">任务类型：</label>
+              <div class="col-lg-10">
+                <label class="radio-inline" v-if="poj.type == 0">
+                  年度任务
+                </label>
+                <label class="radio-inline" v-if="poj.type == 1">
+                  月度任务
+                </label>
+              </div>
+            </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label
+                class="col-lg-2 control-label">任务种类：</label>
+              <div class="col-lg-10">
+                {{ poj.parent_name }}
+              </div>
+            </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label
+                class="col-lg-2 control-label">任务子类：</label>
+              <div class="col-lg-10">
+                {{ poj.sub_type_name }}
+              </div>
+            </div>
+            <div class="form-group col-lg-12 col-xs-12">
+              <label
+                class="col-lg-1 control-label">任务描述：</label>
+              <div class="col-lg-11">
+                <textarea v-model="poj.content" class="form-control" rows="3" disabled></textarea>
+              </div>
+            </div>
 
-                    <!--<div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-4">-->
-                      <!--<span style="margin-top: 5%;color: #5c6e7a;font-weight:bold;">科室:</span>-->
-                      <!--<label style="margin-top: 5%;">-->
-                        <!--<select class="form-control" v-model="deptId">-->
-                          <!--<option value=''>所有科室</option>-->
-                          <!--<option  v-for="dept in depts" :value='dept.id' :key="dept.deptId">{{ dept.name }}</option>-->
-                        <!--</select>-->
-                      <!--</label>-->
-                    <!--</div>-->
-                    <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-4">
-                      <span style="margin-top: 5%;color: #5c6e7a;font-weight:bold;">状态:</span>
-                      <label style="margin-top: 5%;">
-                        <select class="form-control" v-model="dr">
-                          <option value="">所有状态</option>
-                          <option  value=0 >开启状态</option>
-                          <option  value=1 >终止状态</option>
-                        </select>
-                      </label>
-                    </div>
-                    <div class="form-group col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                      <button type="button" style="margin-top: 5%;" class="btn btn-primary" @click="getPojs">
-                        <i class="fa fa-search"></i> 搜索
-                      </button>
-                      <button type="button" style="margin-top: 5%;" class="btn btn-primary" @click="refresh">
-                        <i class="fa fa-refresh"></i> 刷新
-                      </button>
-                    </div>
-                  </div>
+            <div class="form-group col-lg-12 col-xs-12">
+              <label
+                class="col-lg-1 control-label">任务要求：</label>
+              <div class="col-lg-11">
+                <textarea v-model="poj.demand" class="form-control" rows="4" disabled></textarea>
+              </div>
+            </div>
+            <div class="form-group col-lg-12 col-xs-12">
+              <!-- 分割线 -->
+              <div class="fenge" style="width: 100%;height: 10px;border-bottom: #707070 solid 2px;"></div>
+            </div>
 
+            <div>
+              <input type="text" name="pojId" :id="poj.id" v-model="pojid[index]=poj.id" hidden >
+              <input type="text" name="pojName" v-model="pojname[index]=poj.name" hidden >
+              <header class="main-box-header clearfix">
+                <h2>日志填报</h2>
+              </header>
+              <div class="form-group col-lg-12 col-xs-12">
+                <label
+                  class="col-lg-1 control-label">进展情况：</label>
+                <div class="col-lg-11">
+                  <textarea v-model="progress[index]" class="form-control" rows="4"></textarea>
                 </div>
               </div>
+
+              <div class="form-group col-lg-12 col-xs-12">
+                <label
+                  class="col-lg-1 control-label">问题及原因分析：</label>
+                <div class="col-lg-11">
+                  <textarea v-model="question[index]" class="form-control" rows="4"></textarea>
+                </div>
+              </div>
+
+              <!--任务自评-->
+             <!-- <header class="main-box-header clearfix">
+                <h2>任务自评</h2>
+              </header>
+              <input type="text" id="pojId" v-model="pojid[index]=poj.id" hidden >
+              <div class="form-group col-lg-6 col-xs-12">
+                <label
+                  class="col-lg-2 control-label">进度评价：</label>
+                <div class="col-lg-10">
+                    <div class="radio radio-inline" style="margin-top: 0;">
+                    <input type="radio" :id="poj.id+'progressScore'+1" v-model="progressScore[index]" value="0" :name="poj.id+'progressScore'"
+                           checked>
+                    <label :for="poj.id+'progressScore'+1"> 提前 </label>
+                  </div>
+                  <div class="radio radio-inline">
+                    <input type="radio" :id="poj.id+'progressScore'+2" v-model="progressScore[index]" value="1" :name="poj.id+'progressScore'">
+                    <label :for="poj.id+'progressScore'+2"> 正常 </label>
+                  </div>
+                  <div class="radio radio-inline">
+                    <input type="radio" :id="poj.id+'progressScore'+3" v-model="progressScore[index]" value="2" :name="poj.id+'progressScore'">
+                    <label :for="poj.id+'progressScore'+3"> 滞后 </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group col-lg-6 col-xs-12">
+                <label class="col-lg-2 control-label">质量评价：</label>
+                <div class="col-lg-10">
+                  <div class="radio radio-inline" style="margin-top: 0;">
+                    <input type="radio" :id="poj.id+'qualityScore'+1" v-model="qualityScore[index]" value="0" :name="poj.id+'qualityScore'" checked>
+                    <label :for="poj.id+'qualityScore'+1"> 好 </label>
+                  </div>
+                  <div class="radio radio-inline">
+                    <input type="radio" :id="poj.id+'qualityScore'+2" v-model="qualityScore[index]" value="1" :name="poj.id+'qualityScore'">
+                    <label :for="poj.id+'qualityScore'+2"> 中 </label>
+                  </div>
+                  <div class="radio radio-inline">
+                    <input type="radio" :id="poj.id+'qualityScore'+3" v-model="qualityScore[index]" value="2" :name="poj.id+'qualityScore'">
+                    <label :for="poj.id+'qualityScore'+3"> 差 </label>
+                  </div>
+                </div>
+              </div>-->
             </div>
           </div>
         </div>
-        <div class="row">
-          <div v-if="pojs.length == 0" style="color: #000000;margin-left: 3%;">
-            未查找到相应任务
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6" v-for="poj in pojs" :key="poj.id">
-            <div class="main-box clearfix profile-box-contact">
-              <div class="main-box-body clearfix">
-                <div class="profile-box-header gray-bg clearfix">
-                  <h2>任务名称：{{ poj.name }}</h2><br/>
-                  <h5 >任务类型：
-                    <label v-if="poj.type == 0" style="color:greenyellow;">年度任务</label>
-                    <label v-if="poj.type == 1" style="color:yellow;">月度任务</label>
-                  </h5>
-
-                  <ul class="contact-details">
-                    <li>
-                      <i class="fa fa-eye"></i> 开始时间：{{ poj.startdate }}
-                    </li>
-                    <li>
-                      <i class="fa fa-eye-slash"></i> 结束时间：{{ poj.enddate }}
-                    </li>
-                    <li>
-                      <i class="fa fa-flag"></i> 执 行 人 ：{{ poj.userName }}
-                    </li>
-                  </ul>
-                </div>
-                <div class="profile-box-footer clearfix">
-                  <div class="margin-10" style="margin-left:5%;">
-                    <button type="button" class="btn btn-primary " @click="show(poj.id)">
-                      <i class="fa fa-wrench"></i>
-                      查看详情
-                    </button>
-                    <!--<button type="button" class="btn btn-default " @click="disabled(poj.id,1)" v-if="poj.dr==0">-->
-                      <!--<i class="fa fa-times"></i>-->
-                      <!--终止-->
-                    <!--</button>-->
-                    <button type="button" class="btn btn btn-warning" @click="addLog(poj.id)">
-                      <i class="fa fa-pencil"></i>
-                      编写日志
-                    </button>
-                    <!--<button type="button" class="btn btn-danger " @click="deletePoj(poj.id)">-->
-                      <!--<i class="fa fa-trash"></i>-->
-                      <!--删除-->
-                    <!--</button>-->
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      </div>
+      <div class="col-lg-12 col-xs-12 text-center main-box" style="padding: 10px;">
+        <label class="col-lg-4 control-label" style="color: red;" v-if="limitDateState === 1">日志填报时间为每月{{limitDate}}号至月底</label>
+        <button type="button" class="btn btn-success " v-if="pojs.length > 0" @click="submit" :disabled="limitDateState === 1">提交</button>
+        <!--<button type="button" class="btn btn-info" @click="goBack">返回</button>-->
       </div>
     </div>
     <footer id="footer-bar" class="row">
@@ -118,138 +169,132 @@
   </div>
 </template>
 
+
 <script>
 
   import $ from "jquery"
   import global from "../Global"
 
   export default {
-    name: "UserManagement",
+    name: "table1",
     data() {
       return {
-        msg:"",
-        // userinfo: [],
-        userId : '',
-        name:'',
-        deptId:'',
-        code:'',
-        dr:'',
-        depts:[],
-        deptModel:[],
-        pojs:[],
-        poj:[],
-        dept:[],
-        role: 0
+        pojs : [],
+        pojid: [],
+        pojname:[],
+        progress: [],//进展情况
+        question: [],//问题及原因
+        //progressScore: [], //进度评分
+        //qualityScore: [],//质量评分
+        userid: '',
+        logs: [],
+        nowDate: '',
+        limitDateState: 0, //是否在日期限制，0为可编辑日志，1为不可编辑日志
+        limitDate: ''
       }
     },
     mounted: function () {
-      //查找是否有新增权限
-      var roles = sessionStorage.getItem("user_role");
-      console.log(roles);
-      if (roles.indexOf("01")!= -1){
-        this.role = 1;
+      this.userid = sessionStorage.getItem("userid");
+      //时间校验，判断是否到达日志填报日期
+      this.limitDate = global.performance_reporting_time;
+      var date = new Date();
+      if ( parseInt(this.limitDate) <= date.getDate() ){
+        this.limitDateState = 0;
+      } else {
+        this.limitDateState = 1;
       }
       this.$nextTick(function () {
         this.init();
       });
-
+    },
+    watch:{
+      'progress' : function () {
+        console.log(this.progress);
+      }
     },
     methods: {
       init: function () {
-        this.getDept();
-        this.getPojs();
+        this.getPoj();
       },
-      getPojs: function () {
-        const that = this;
-        this.userId = sessionStorage.getItem("userid");
-        console.log(this.userId);
-        var data = {
-          'pageIndex':0,
-          'size':20,
-          'searchMap':{
-            'name': this.name,
-            'deptid': this.deptId,
-            'code': this.code,
-            'dr': this.dr,
-            'userid':this.userId
-          }
-        };
-
-        that.$http.post(global.appCtx + '/projct/findAll',data).then(function (response) {
-          this.pojs = response.data;
-        },function (error) {
-          console.log(error);
-        });
-      },
-      getDept:function () {
-        const that = this;
-        that.$http.get(global.appCtx + '/dept/findAllDept').then(function (response) {
-          this.depts = response.data;
-        },function (error) {
-          console.log(error);
-        });
-      },
-      disabled: function (id,dr) {
+      getPoj: function () {
         const that = this;
         const data = {
-          'id': id,
-          'dr':dr
+          'userId': this.userid
         };
-        that.$http.post(global.appCtx + '/projct/disabled',data).then(function (response) {
-          if (response.data.success === "success"){
-            alert(response.data.msg);
+        that.$http.post(global.appCtx + '/projct/findPojByUserId', data).then(function (response) {
+          this.pojs = response.data;
+          for (var i =0;i<this.pojs.length;i++){
+            this.pojid[i] = this.pojs[i].id;
           }
-          this.refresh();
-        },function (error) {
+          this.getLog();
+        }, function (error) {
           console.log(error);
+          alert("网络连接失败");
         });
       },
-      refresh: function () {
-        this.name = '';
-        this.code = '';
-        this.dr = '';
-        this.deptId='';
-        this.getPojs();
-      },
-      modifiy: function (id) {
-        this.$router.push({
-          path: '/PojModifiy',
-          query: { pojid: id }
-        });
-      },
-      show: function(id){
-        this.$router.push({
-          path: '/ShowPoj',
-          query: { pojid: id }
-        });
-      },
-      deletePoj:function(id){
+      getLog: function () {
         const that = this;
-        const data ={
-          "id": id
+        var date = new Date();
+        var dateSrc = "";
+        if (date.getMonth()+1<10){
+          dateSrc=date.getFullYear()+"-0"+(date.getMonth()+1);
+        } else {
+          dateSrc=date.getFullYear()+"-"+(date.getMonth()+1);
+        }
+        const data = {
+          'userid': this.userid,
+          'pojids': this.pojid,
+          'logDate' : dateSrc
         };
-        that.$http.post(global.appCtx + '/projct/delete',data).then(function (response) {
-          if (response.data.success === "success"){
-            alert(response.data.msg);
+        that.$http.post(global.appCtx + '/worklog/findLogsByPojOfUser', data).then(function (response) {
+          var log = response.data.data;
+          for (var i=0;i<log.length;i++){
+            var pid = log[i].pojid;
+            for (var j=0;j<that.pojid.length;j++){
+              if (pid === that.pojid[j]) {
+                this.progress[j] = log[i].progress;
+                this.question[j] = log[i].question;
+              }
+            }
           }
-          this.refresh();
-        },function (error) {
+          console.log(this.progress);
+        }, function (error) {
           console.log(error);
+          alert("获取历史日志失败！");
         });
       },
-      addLog: function (id) {
+      goBack: function () {
         this.$router.push({
-          path: '/AddLog',
-          query: { pojid: id }
+          path: '/WorkLog'
+        });
+      },
+      submit: function () {
+        const that = this;
+        //校验
+        const data = {
+          'pojids': this.pojid,
+          'userid': this.userid,
+          'pojnames': this.pojname,
+          'progress': this.progress,
+          'questions': this.question
+          // 'progressScore': this.progressScore,
+          // 'qualityScore': this.qualityScore
+
+        };
+        that.$http.post(global.appCtx + '/worklog/addLogs', data).then(function (response) {
+          if (response.data.state === "200") {
+            alert("保存成功！");
+          } else {
+            console.log(response.data.error);
+            alert("保存失败！");
+          }
+        }, function (error) {
+          console.log(error);
+          alert("提交失败！");
         });
       }
     },
-    watch:{
+    update: function () {
     }
   }
-
 </script>
-
-<style>
-
-</style>

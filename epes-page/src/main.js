@@ -11,6 +11,7 @@ Vue.prototype.$echarts = echarts
 Vue.use(VueResource);
 Vue.use($);
 
+
 Vue.config.productionTip = false;
 Vue.http.options.emulateJSON = true;
 Vue.http.options.headers = {

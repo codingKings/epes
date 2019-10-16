@@ -107,7 +107,7 @@ public class WorkLogService {
         return workLogDao.findLogByUserId(userid,pojid,startdate,enddate);
     }
 
-    public WorkLog findByData(String pojId,String date) {
-        return workLogDao.findLogByDate(pojId,date);
+    public WorkLog findByData(String pojId,String userid,String date) {
+        return workLogDao.findLogByDate(pojId,userid,date);
     }
 }

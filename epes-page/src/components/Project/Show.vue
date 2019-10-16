@@ -30,12 +30,26 @@
               <label
                 class="col-lg-2 control-label">任务类型：</label>
               <div class="col-lg-10">
-                <label class="radio-inline" v-if="poj.type == 0">
+                <label class="radio-inline" v-if="poj.type === '0'">
                    年度任务
                 </label>
-                <label class="radio-inline" v-if="poj.type == 1">
+                <label class="radio-inline" v-if="poj.type === '1'">
                    月度任务
                 </label>
+              </div>
+            </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label
+                class="col-lg-2 control-label">任务种类：</label>
+              <div class="col-lg-10">
+                {{ poj.parent_name }}
+              </div>
+            </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label
+                class="col-lg-2 control-label">任务子类：</label>
+              <div class="col-lg-10">
+                {{ poj.sub_type_name }}
               </div>
             </div>
 

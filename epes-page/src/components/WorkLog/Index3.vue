@@ -6,7 +6,7 @@
           <div class="col-lg-12">
             <ol class="breadcrumb">
               <li><a href="indexpage">首页</a></li>
-              <li class="active"><span>任务管理</span></li>
+              <li class="active"><span>绩效管理</span></li>
             </ol>
           </div>
         </div>
@@ -24,20 +24,14 @@
                     </div>
 
                     <!--<div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-4">-->
-                      <!--<span style="margin-top: 5%;color: #5c6e7a;font-weight:bold;">编号:</span>-->
+                      <!--<span style="margin-top: 5%;color: #5c6e7a;font-weight:bold;">科室:</span>-->
                       <!--<label style="margin-top: 5%;">-->
-                        <!--<input type="text" v-model="code" class="form-control" />-->
+                        <!--<select class="form-control" v-model="deptId">-->
+                          <!--<option value=''>所有科室</option>-->
+                          <!--<option  v-for="dept in depts" :value='dept.id' :key="dept.deptId">{{ dept.name }}</option>-->
+                        <!--</select>-->
                       <!--</label>-->
                     <!--</div>-->
-                    <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-4">
-                      <span style="margin-top: 5%;color: #5c6e7a;font-weight:bold;">科室:</span>
-                      <label style="margin-top: 5%;">
-                        <select class="form-control" v-model="deptId">
-                          <option value=''>所有科室</option>
-                          <option  v-for="dept in depts" :value='dept.id' :key="dept.deptId">{{ dept.name }}</option>
-                        </select>
-                      </label>
-                    </div>
                     <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-4">
                       <span style="margin-top: 5%;color: #5c6e7a;font-weight:bold;">状态:</span>
                       <label style="margin-top: 5%;">
@@ -55,12 +49,6 @@
                       <button type="button" style="margin-top: 5%;" class="btn btn-primary" @click="refresh">
                         <i class="fa fa-refresh"></i> 刷新
                       </button>
-
-
-                      <!--<button v-if="role == 1" type="button" style="margin-top: 5%;" class="btn btn-success" @click="addDept">-->
-                        <button type="button" style="margin-top: 5%;" class="btn btn-success" @click="addDept">
-                        <i class="fa fa-plus"></i> 新建
-                      </button>
                     </div>
                   </div>
 
@@ -73,16 +61,16 @@
           <div v-if="pojs.length == 0" style="color: #000000;margin-left: 3%;">
             未查找到相应任务
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6" v-for="poj in pojs" :key="poj.id" >
-            <div class="main-box clearfix profile-box-contact " >
+          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6" v-for="poj in pojs" :key="poj.id">
+            <div class="main-box clearfix profile-box-contact">
               <div class="main-box-body clearfix">
-                <div class="profile-box-header gray-bg clearfix" style="height: 220px;">
+                <div class="profile-box-header gray-bg clearfix">
                   <h2>任务名称：{{ poj.name }}</h2><br/>
                   <h5 >任务类型：
-                    <label style="color:greenyellow;">{{poj.sub_type_name}}</label>
-                    <!--<label v-if="poj.type == 0" style="color:greenyellow;">年度任务</label>-->
-                    <!--<label v-if="poj.type == 1" style="color:yellow;">月度任务</label>-->
+                    <label v-if="poj.type == 0" style="color:greenyellow;">年度任务</label>
+                    <label v-if="poj.type == 1" style="color:yellow;">月度任务</label>
                   </h5>
+
                   <ul class="contact-details">
                     <li>
                       <i class="fa fa-eye"></i> 开始时间：{{ poj.startdate }}
@@ -90,7 +78,7 @@
                     <li>
                       <i class="fa fa-eye-slash"></i> 结束时间：{{ poj.enddate }}
                     </li>
-                    <li> <!-- v-if="" -->
+                    <li>
                       <i class="fa fa-flag"></i> 执 行 人 ：{{ poj.userName }}
                     </li>
                   </ul>
@@ -101,18 +89,18 @@
                       <i class="fa fa-wrench"></i>
                       查看详情
                     </button>
-                    <button type="button" class="btn btn-default " @click="disabled(poj.id,1)" v-if="poj.dr==0">
-                      <i class="fa fa-times"></i>
-                      终止
+                    <!--<button type="button" class="btn btn-default " @click="disabled(poj.id,1)" v-if="poj.dr==0">-->
+                      <!--<i class="fa fa-times"></i>-->
+                      <!--终止-->
+                    <!--</button>-->
+                    <button type="button" class="btn btn btn-warning" @click="addLog(poj.id)">
+                      <i class="fa fa-pencil"></i>
+                      编写日志
                     </button>
-                    <button type="button" class="btn btn btn-warning" @click="disabled(poj.id,0)" v-else>
-                      <i class="fa fa-unlock-alt "></i>
-                      启动
-                    </button>
-                    <button type="button" class="btn btn-danger " @click="deletePoj(poj.id)">
-                      <i class="fa fa-trash"></i>
-                      删除
-                    </button>
+                    <!--<button type="button" class="btn btn-danger " @click="deletePoj(poj.id)">-->
+                      <!--<i class="fa fa-trash"></i>-->
+                      <!--删除-->
+                    <!--</button>-->
                   </div>
                 </div>
               </div>
@@ -182,12 +170,11 @@
             'name': this.name,
             'deptid': this.deptId,
             'code': this.code,
-            'dr': this.dr
+            'dr': this.dr,
+            'userid':this.userId
           }
         };
-        if (this.role !=1){
-          data.searchMap.userid = this.userId;
-        }
+
         that.$http.post(global.appCtx + '/projct/findAll',data).then(function (response) {
           this.pojs = response.data;
         },function (error) {
@@ -250,9 +237,10 @@
           console.log(error);
         });
       },
-      addDept: function () {
+      addLog: function (id) {
         this.$router.push({
-          path: '/AddPoj',
+          path: '/AddLog',
+          query: { pojid: id }
         });
       }
     },

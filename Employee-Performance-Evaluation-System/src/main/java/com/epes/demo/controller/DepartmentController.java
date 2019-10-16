@@ -83,7 +83,7 @@ public class DepartmentController {
     @GetMapping(value = "/findDeptUsers")
     @ResponseBody
     public List<Map<String, Object>> findDeptUsers(String id){
-        String sql = "select id,name,d.name deptName from demo_user_info u left join demo_department d on u.deptid = d.id where deptid = ?";
+        String sql = "select u.id,u.name,d.name deptName from demo_user_info u left join demo_department d on u.deptid = d.id where deptid = ?";
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql,new Object[]{id});
         return list;
     }
