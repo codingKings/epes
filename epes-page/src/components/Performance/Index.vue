@@ -23,7 +23,6 @@
                             <input type="text" v-model="name" class="form-control"/>
                           </label>
                         </div>
-
                          <!--   -->
                         <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-4">
                           <span style="margin-top: 5%;color: #5c6e7a;font-weight:bold;">工号:</span>
@@ -107,7 +106,7 @@
   import global from "../Global"
 
   export default {
-    name: "UserManagement",
+    name: "performanceIndex",
     data() {
       return {
         msg:"",

@@ -91,7 +91,11 @@
               </div>
             </div>
             <div class="form-group text-center">
-              <!--<button type="button" class="btn btn-success " @click="submit">提交</button>-->
+              <t v-if="role===1 && poj.state==='00'">
+                <button type="button" class="btn btn-success " @click="approval('01')">审核通过</button>
+                <button type="button" class="btn btn-warning " @click="approval('02')">审核不通过</button>
+              </t>
+
               <button type="button" class="btn btn-info" @click="goBack">返回</button>
             </div>
           </div>
@@ -108,19 +112,25 @@
   import global from "../Global"
 
   export default {
-    name: "table1",
+    name: "projectShow",
     data() {
       return {
         dept:[],
         deptModel:[],
         userInfo:[],
-        poj:[]
+        poj:[],
+        role:0
       }
     },
     mounted: function () {
       this.$nextTick(function () {
         this.init();
       });
+      //查找是否有新增权限
+      var roles = sessionStorage.getItem("user_role");
+      if (roles.indexOf("01")!== -1){
+        this.role = 1;
+      }
     },
     methods: {
       init: function () {
@@ -157,6 +167,21 @@
       goBack:function () {
         this.$router.push({
           path: '/Project'
+        });
+      },
+      approval :function (state) {
+        var data = {
+          'pojid' : this.poj.id,
+          'state' : state
+        };
+        this.$http.post(global.appCtx + '/projct/updatePojState',data).then(function (response) {
+          alert(response.data.msg);
+          if (response.data.success === "success") {
+            this.goBack();
+          }
+        },function (error) {
+          console.log(error);
+          alert("提交失败！");
         });
       }
     },

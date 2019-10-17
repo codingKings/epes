@@ -24,6 +24,6 @@ public interface ProjectDao {
     @Select("select p.*,pt.parent_code parent_code from demo_project p left join  demo_project_type pt on p.sub_type_code  = pt.code where p.id = #{id}")
     Project findPro(String id);
 
-    @Select("select p.*,pt.parent_code parent_code from demo_project p left join demo_project_type pt on p.sub_type_code = pt.code where p.userId = #{userId} and date_format(p.enddate,'yyyy-mm') <= date_format(sysdate(),'yyyy-mm') and p.dr = 0 order by p.createtime")
-    List<Project> findPojByUserId(String userId);
+    @Select("select p.*,pt.parent_code parent_code from demo_project p left join demo_project_type pt on p.sub_type_code = pt.code where p.userId = #{userId} and state = #{state} and date_format(p.enddate,'yyyy-mm') <= date_format(sysdate(),'yyyy-mm') and p.dr = 0 order by p.createtime")
+    List<Project> findPojByUserId(@Param("userId")String userId, @Param("state")String state);
 }

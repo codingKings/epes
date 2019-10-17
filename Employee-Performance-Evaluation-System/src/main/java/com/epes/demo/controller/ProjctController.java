@@ -96,6 +96,21 @@ public class ProjctController {
         return projectService.update(project);
     }
 
+    /**
+     * 修改状态
+     * @param pojid
+     * @param state
+     * @return
+     */
+    @PostMapping(value = "/updatePojState")
+    @ResponseBody
+    public Map<String,String> updatePojState(String pojid,String state){
+        Project project = new Project();
+        project.setId(pojid);
+        project.setState(state);
+        return projectService.update(project);
+    }
+
     @PostMapping(value = "/addPoj")
     @ResponseBody
     public Map<String , String > addPoj(Project project){
@@ -138,7 +153,7 @@ public class ProjctController {
 
     @PostMapping(value = "/findPojByUserId")
     @ResponseBody
-    public List<Project> findPojByUserId(String userId){
+    public List<Project> findPojByUserId(String userId,String state){
         //查询所有任务种类(如果有缓存机制，请放到缓存里面)
         String findPojType = "select code,name from demo_project_type";
         List<Map<String,Object>> pojTypeList = jdbcTemplate.queryForList(findPojType);
@@ -149,7 +164,7 @@ public class ProjctController {
             String value = String.valueOf(typeMap.get("name"));
             pojTypeMapper.put(key,value);
         }
-        List<Project> projectList =projectService.findPojByUserId(userId);
+        List<Project> projectList =projectService.findPojByUserId(userId,state);
         for (Project poj : projectList){
             poj.setParent_name(pojTypeMapper.get(poj.getParent_code()));
         }

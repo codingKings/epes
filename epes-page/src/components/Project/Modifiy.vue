@@ -7,48 +7,92 @@
             <h2>任务编辑</h2>
           </header>
           <div class="main-box-body clearfix">
-              <div class="form-group col-lg-6 col-xs-12">
-                <label for="inputEmail1" class="col-lg-2 control-label">任务名称：</label>
-                <div class="col-lg-10">
-                  <input type="email" class="form-control" id="inputEmail1"
-                         placeholder="科室名称" v-model="poj.name">
-                </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label for="inputEmail1" class="col-lg-2 control-label">任务名称：</label>
+              <div class="col-lg-10">
+                <input type="email" class="form-control" id="inputEmail1"
+                       placeholder="任务名称" v-model="poj.name" disabled>
               </div>
-              <div class="form-group col-lg-6 col-xs-12">
-                <label
-                       class="col-lg-2 control-label">任务编码：</label>
-                <div class="col-lg-10">
-                  <input type="text" class="form-control" placeholder="任务编码" v-model="poj.code" readonly>
-                </div>
-              </div>
-              
+            </div>
             <div class="form-group col-lg-6 col-xs-12">
               <label class="col-lg-2 control-label">所属科室：</label>
               <div class="col-lg-10">
-                
-                <select class="form-control" id="deptSel" v-model="poj.deptid">
-                  <template v-for="dept in depts">
-                    <option  v-if="dept.isSelected" selected :value='dept.id' :key="dept.dept">{{ dept.name }}</option>
-                    <option  v-if="!dept.isSelected" :value='dept.id' :key="dept.id">{{ dept.name }}</option>
-                  </template>
+                <label>{{ poj.deptname }}</label>
+              </div>
+            </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label class="col-lg-2 control-label">人员分配：</label>
+              <div class="col-lg-10">
+                <label>{{ poj.userName }}</label>
+              </div>
+            </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label
+                class="col-lg-2 control-label">任务类型：</label>
+              <div class="col-lg-10">
+                <label class="radio-inline" v-if="poj.type === '0'">
+                  年度任务
+                </label>
+                <label class="radio-inline" v-if="poj.type === '1'">
+                  月度任务
+                </label>
+              </div>
+            </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label
+                class="col-lg-2 control-label">任务种类：</label>
+              <div class="col-lg-10">
+                {{ poj.parent_name }}
+              </div>
+            </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label
+                class="col-lg-2 control-label">任务子类：</label>
+              <div class="col-lg-10">
+                {{ poj.sub_type_name }}
+              </div>
+            </div>
+
+            <div class="form-group col-lg-6 col-xs-12">
+              <label
+                class="col-lg-2 control-label">任务状态：</label>
+              <div class="col-lg-4">
+                <select class="form-control" v-model="poj.dr" disabled>
+                  <option v-if="poj.dr==0" value=0 selected>启用状态</option>
+                  <option v-if="poj.dr==1" value=1 selected>结束状态</option>
                 </select>
               </div>
             </div>
-              <div class="form-group col-lg-6 col-xs-12">
-                <label
-                  class="col-lg-2 control-label">任务状态：</label>
-                <div class="col-lg-10">
-                  <select class="form-control" v-model="poj.dr">
-                    <option v-if="poj.dr == 0"  value=0 selected>启用状态</option>
-                    <option v-else  value=0 >启用状态</option>
-                    <option v-if="poj.dr == 1"  value=1 selected>结束状态</option>
-                    <option v-else  value=1 >结束状态</option>
-                  </select>
-                </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label class="col-lg-2 control-label">开始时间：</label>
+              <div class="col-lg-10">
+                <label>{{ poj.startdate }}</label>
               </div>
-              <div class="form-group text-center">
-                <button type="button" class="btn btn-success " @click="submit">提交</button>
-                <button type="button" class="btn btn-info" @click="goBack">返回</button>
+            </div>
+            <div class="form-group col-lg-6 col-xs-12">
+              <label class="col-lg-2 control-label">结束时间：</label>
+              <div class="col-lg-10">
+                <label>{{ poj.enddate }}</label>
+              </div>
+            </div>
+            <div class="form-group col-lg-12 col-xs-12">
+              <label
+                class="col-lg-1 control-label">任务描述：</label>
+              <div class="col-lg-11">
+                <textarea v-model="poj.content" class="form-control" rows="3" ></textarea>
+              </div>
+            </div>
+
+            <div class="form-group col-lg-12 col-xs-12">
+              <label
+                class="col-lg-1 control-label">任务要求：</label>
+              <div class="col-lg-11">
+                <textarea v-model="poj.demand" class="form-control" rows="4" ></textarea>
+              </div>
+            </div>
+            <div class="form-group text-center">
+              <button type="button" class="btn btn-success " @click="update">提交</button>
+              <button type="button" class="btn btn-info" @click="goBack">返回</button>
             </div>
           </div>
         </div>
@@ -57,20 +101,20 @@
   </div>
 </template>
 
+
 <script>
 
   import $ from "jquery"
   import global from "../Global"
 
   export default {
-    name: "table1",
+    name: "projectModifiy",
     data() {
       return {
         dept:[],
         deptModel:[],
         userInfo:[],
-        depts:[],
-        poj:[]
+        poj:{}
       }
     },
     mounted: function () {
@@ -115,22 +159,20 @@
           path: '/Project'
         });
       },
-      submit:function(){
-        const that = this;
-        that.$http.post(global.appCtx + '/projct/update',this.poj).then(function (response) {
+      update: function () {
+        this.poj.state = '00';
+        this.$http.post(global.appCtx + '/projct/update',this.poj).then(function (response) {
           alert(response.data.msg);
-          if (response.data.success === "success"){
+          if (response.data.success === "success") {
             this.goBack();
           }
         },function (error) {
           console.log(error);
+          alert("提交失败！");
         });
       }
     },
-    update: function () {}
+    update: function () {
+    }
   }
 </script>
-
-<style>
-
-</style>

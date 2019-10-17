@@ -90,6 +90,12 @@ public class Project extends BaseEntity {
     private Integer dr;
 
     /**
+     * 任务状态  00：待审核  01：审核通过   02：审核不通过
+      */
+    @Column(name = "state", type = MySqlTypeConstant.VARCHAR)
+    private String state;
+
+    /**
      * 任务类型编号
      */
     @Column(name = "sub_type_code", type = MySqlTypeConstant.VARCHAR)

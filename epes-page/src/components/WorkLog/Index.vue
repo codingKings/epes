@@ -176,7 +176,7 @@
   import global from "../Global"
 
   export default {
-    name: "table1",
+    name: "workLogIndex",
     data() {
       return {
         pojs : [],
@@ -219,7 +219,8 @@
       getPoj: function () {
         const that = this;
         const data = {
-          'userId': this.userid
+          'userId': this.userid,
+          'state' : '01'
         };
         that.$http.post(global.appCtx + '/projct/findPojByUserId', data).then(function (response) {
           this.pojs = response.data;

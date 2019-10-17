@@ -29,7 +29,7 @@
                         <!--<input type="text" v-model="code" class="form-control" />-->
                       <!--</label>-->
                     <!--</div>-->
-                    <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-4">
+                    <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-4" v-if="role===1">
                       <span style="margin-top: 5%;color: #5c6e7a;font-weight:bold;">科室:</span>
                       <label style="margin-top: 5%;">
                         <select class="form-control" v-model="deptId">
@@ -38,13 +38,24 @@
                         </select>
                       </label>
                     </div>
+
+                    <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-4" v-if="role===1">
+                      <span style="margin-top: 5%;color: #5c6e7a;font-weight:bold;">执行人:</span>
+                      <label style="margin-top: 5%;">
+                        <select class="form-control" v-model="deptUserId">
+                          <option value=''>所有员工</option>
+                          <option v-for="user in deptUsers" :value='user.id' :key="user.id">{{ user.name }}</option>
+                        </select>
+                      </label>
+                    </div>
                     <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-4">
                       <span style="margin-top: 5%;color: #5c6e7a;font-weight:bold;">状态:</span>
                       <label style="margin-top: 5%;">
-                        <select class="form-control" v-model="dr">
+                        <select class="form-control" v-model="state">
                           <option value="">所有状态</option>
-                          <option  value=0 >开启状态</option>
-                          <option  value=1 >终止状态</option>
+                          <option  value='00' >待审核</option>
+                          <option  value='01' >审核通过</option>
+                          <option  value='02' >审核不通过</option>
                         </select>
                       </label>
                     </div>
@@ -70,19 +81,21 @@
           </div>
         </div>
         <div class="row">
-          <div v-if="pojs.length == 0" style="color: #000000;margin-left: 3%;">
+          <div v-if="pojs.length === 0" style="color: #000000;margin-left: 3%;">
             未查找到相应任务
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6" v-for="poj in pojs" :key="poj.id" >
+          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12" v-for="poj in pojs" :key="poj.id" >
             <div class="main-box clearfix profile-box-contact " >
               <div class="main-box-body clearfix">
                 <div class="profile-box-header gray-bg clearfix" style="height: 220px;">
                   <h2>任务名称：{{ poj.name }}</h2><br/>
-                  <h5 >任务类型：
+                  <h5>任务类型：
                     <label style="color:greenyellow;">{{poj.sub_type_name}}</label>
                     <!--<label v-if="poj.type == 0" style="color:greenyellow;">年度任务</label>-->
                     <!--<label v-if="poj.type == 1" style="color:yellow;">月度任务</label>-->
                   </h5>
+                  <label style="color:yellow;" v-if="poj.state ==='00'">待审核</label>
+                  <label style="color:red;" v-if="poj.state ==='02'">审核不通过</label>
                   <ul class="contact-details">
                     <li>
                       <i class="fa fa-eye"></i> 开始时间：{{ poj.startdate }}
@@ -101,18 +114,30 @@
                       <i class="fa fa-wrench"></i>
                       查看详情
                     </button>
-                    <button type="button" class="btn btn-default " @click="disabled(poj.id,1)" v-if="poj.dr==0">
-                      <i class="fa fa-times"></i>
-                      终止
-                    </button>
-                    <button type="button" class="btn btn btn-warning" @click="disabled(poj.id,0)" v-else>
-                      <i class="fa fa-unlock-alt "></i>
-                      启动
-                    </button>
-                    <button type="button" class="btn btn-danger " @click="deletePoj(poj.id)">
-                      <i class="fa fa-trash"></i>
-                      删除
-                    </button>
+                    <t v-if="role===1">
+                      <button type="button" class="btn btn-default " @click="disabled(poj.id,1)" v-if="poj.dr===0">
+                        <i class="fa fa-times"></i>
+                        终止
+                      </button>
+                      <button type="button" class="btn btn btn-warning" @click="disabled(poj.id,0)" v-else>
+                        <i class="fa fa-unlock-alt "></i>
+                        启动
+                      </button>
+                      <button type="button" class="btn btn-danger " @click="deletePoj(poj.id)">
+                        <i class="fa fa-trash"></i>
+                        删除
+                      </button>
+                    </t>
+                    <t v-else>
+                      <button type="button" class="btn btn-default btn-warning" @click="modifiy(poj.id)" v-if="poj.state==='02' || poj.state==='00'">
+                        <i class="fa fa-cog"></i>
+                        编辑
+                      </button>
+                      <button type="button" class="btn btn-danger " @click="deletePoj(poj.id)" v-if="poj.state==='02' || poj.state==='00'">
+                        <i class="fa fa-trash"></i>
+                        删除
+                      </button>
+                    </t>
                   </div>
                 </div>
               </div>
@@ -136,7 +161,7 @@
   import global from "../Global"
 
   export default {
-    name: "UserManagement",
+    name: "projectIndex",
     data() {
       return {
         msg:"",
@@ -144,20 +169,22 @@
         userId : '',
         name:'',
         deptId:'',
-        code:'',
+        deptUserId:'',
+        // code:'',
         dr:'',
+        state:'',
         depts:[],
         deptModel:[],
         pojs:[],
         poj:[],
         dept:[],
+        deptUsers:[],
         role: 0
       }
     },
     mounted: function () {
       //查找是否有新增权限
       var roles = sessionStorage.getItem("user_role");
-      console.log(roles);
       if (roles.indexOf("01")!= -1){
         this.role = 1;
       }
@@ -181,12 +208,15 @@
           'searchMap':{
             'name': this.name,
             'deptid': this.deptId,
-            'code': this.code,
-            'dr': this.dr
+            // 'code': this.code,
+
+            'state': this.state
           }
         };
         if (this.role !=1){
           data.searchMap.userid = this.userId;
+        } else {
+          data.searchMap.userid = this.deptUserId;
         }
         that.$http.post(global.appCtx + '/projct/findAll',data).then(function (response) {
           this.pojs = response.data;
@@ -256,7 +286,15 @@
         });
       }
     },
-    watch:{
+    watch: {
+      //选择部门后显示部门职员
+      'deptId': function () {
+        this.$http.get(global.appCtx + '/dept/findDeptUsers?id=' + this.deptId).then(function (response) {
+          this.deptUsers = response.data;
+        }, function (error) {
+          console.log(error);
+        });
+      }
     }
   }
 

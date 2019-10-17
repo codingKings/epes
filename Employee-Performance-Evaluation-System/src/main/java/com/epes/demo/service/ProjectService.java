@@ -103,8 +103,8 @@ public class ProjectService {
      * @param userId
      * @return
      */
-    public List<Project> findPojByUserId(String userId){
-        return projectDao.findPojByUserId(userId);
+    public List<Project> findPojByUserId(String userId, String state){
+        return projectDao.findPojByUserId(userId,state);
     }
 
 
