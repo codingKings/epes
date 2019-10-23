@@ -314,6 +314,7 @@
 
 <script>
   import $ from "jquery"
+  import global from "./components/Global"
 
   export default {
     name: 'App',
@@ -343,7 +344,7 @@
           userid = sessionStorage.getItem('userid');
           if (userid === undefined || userid === null || userid === ""){
             alert("登陆已失效，请先登录！");
-            window.location.href = "http://localhost:8080/";
+            window.location.href = global.appCtx;
           }
           this.getUserInfo(userid);
           this.userid= userid;
@@ -359,7 +360,7 @@
         const data = {
           "id": id
         }
-        that.$http.post('http://localhost:8080/UserInfo/findUserById',data).then(function (response) {
+        that.$http.post(global.appCtx+'/UserInfo/findUserById',data).then(function (response) {
           this.userInfo = response.data;
           sessionStorage.setItem('user_dept',this.userInfo.deptid);
           var roles = this.userInfo.userRolesList;
@@ -380,7 +381,7 @@
         const data = {
           "userid" : this.userid
         }
-        that.$http.post('http://localhost:8080/getApp',data).then(function (response) {
+        that.$http.post(global.appCtx+'/getApp',data).then(function (response) {
          this.meuns = response.data;
         },function (error) {
           console.log(error);
@@ -391,7 +392,7 @@
         sessionStorage.removeItem("user_dept");
         sessionStorage.removeItem('user_role');
         // sessionStorage.removeItem('username');
-        window.location.href = "http://localhost:8080/";
+        window.location.href = global.appCtx;
       }
     },
     update: function () {}

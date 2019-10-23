@@ -156,56 +156,6 @@ public class WorkLogController {
         return workLogService.delete(id);
     }
 
-    @PostMapping(value = "/addLog")
-    @ResponseBody
-    public Map<String, String> addLog(String userid, String pojid, String pojname, String progress, String question, String progressScore, String qualityScore) {
-
-        Map<String, String> result = new HashMap<>();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
-
-        UserInfo user = userInfoService.findUser(userid);
-        WorkLog workLog = new WorkLog();
-
-        workLog.setPojid(pojid);
-        workLog.setPojname(pojname);
-        workLog.setUserid(user.getId());
-        workLog.setUsernmae(user.getName());
-        workLog.setProgress(progress);
-        workLog.setQuestion(question);
-
-        workLog.setLogDate(df.format(new Date()));
-        //保存自评
-        PerformanceScore score = new PerformanceScore();
-        score.setType("0");
-        score.setProgressScore(progressScore);
-        score.setQualityScore(qualityScore);
-        score.setUserid(user.getId());
-        score.setUsername(user.getName());
-
-
-        //获取当前月份
-        String nowDate = df.format(new Date());
-        //查询是否有日志
-        WorkLog oldLog = workLogService.findByData(pojid, userid, nowDate);
-
-        if (oldLog == null) {
-            //新增
-            workLog.setId(String.valueOf(UUID.randomUUID()));
-            score.setLogid(workLog.getId());
-            scoreService.addScore(score);
-            result = workLogService.addWorkLog(workLog);
-        } else {
-            assert false;
-            workLog.setId(oldLog.getId());
-            score.setLogid(workLog.getId());
-            //修改
-            scoreService.findScoreByUserOfLog(userid, workLog.getId());
-            scoreService.update(score);
-            result = workLogService.update(workLog);
-        }
-
-        return result;
-    }
 
 
     @PostMapping(value = "/addLogs")

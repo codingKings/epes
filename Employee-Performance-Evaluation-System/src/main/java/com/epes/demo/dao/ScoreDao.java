@@ -20,6 +20,11 @@ public interface ScoreDao {
     @Select("select * from demo_performance_score where userid = #{userid}")
     List<PerformanceScore> findScoreByEmpid(@Param("userid") String userid);
 
-    @Select("select * from demo_performance_score where userid = #{userid} and logid = #{logid}")
-    PerformanceScore findScoreByUserOfLog(@Param("userid") String userid, @Param("logid") String logid);
+    @Select("select * from demo_performance_score where scoreDate= #{scoreDate} and type = '0' and scoreUserid = #{scoreUserid} and userid = #{userid} and pojid = #{pojid} ")
+    PerformanceScore findScoreByUserPojid(@Param("scoreDate") String scoreDate,@Param("scoreUserid")String scoreUserid,
+                                            @Param("userid") String userid, @Param("pojid") String pojid);
+
+    @Select("select * from demo_performance_score where scoreDate= #{scoreDate} and type = '1' and scoreUserid = #{scoreUserid} and userid = #{userid} ")
+    PerformanceScore findScoreByUser(@Param("scoreDate") String scoreDate,@Param("scoreUserid")String scoreUserid,
+                                            @Param("userid") String userid);
 }

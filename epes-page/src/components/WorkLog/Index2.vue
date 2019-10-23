@@ -5,7 +5,7 @@
         <div class="row">
           <div class="col-lg-12">
             <ol class="breadcrumb">
-              <li><a href="indexpage">首页</a></li>
+              <li><a href="/">首页</a></li>
               <li class="active"><span>工作日志</span></li>
             </ol>
           </div>

@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.SimpleFormatter;
 
 
 /**
@@ -46,11 +48,17 @@ public class PerformanceScoreService {
      * @return
      */
     public int update(PerformanceScore performanceScore){
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        performanceScore.setModifiedtime(df.format(new Date()));
         return baseService.update(performanceScore);
     }
 
-    public PerformanceScore findScoreByUserOfLog(String userid,String logid){
-        return scoreDao.findScoreByUserOfLog(userid,logid);
+    public PerformanceScore findScoreByUserPojId(String scoreDate,String scoreUserid,String userid,String pojid){
+        return scoreDao.findScoreByUserPojid(scoreDate,scoreUserid,userid,pojid);
+    }
+
+    public PerformanceScore findScoreByUser(String scoreDate,String scoreUserid,String userid){
+        return scoreDao.findScoreByUser(scoreDate,scoreUserid,userid);
     }
 
     /** 查看评分

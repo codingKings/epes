@@ -5,7 +5,7 @@
             <div class="row">
               <div class="col-lg-12">
                 <ol class="breadcrumb">
-                  <li><a href="indexpage">首页</a></li>
+                  <li><a href="/">首页</a></li>
                   <li class="active"><span>绩效管理</span></li>
                 </ol>
               </div>
@@ -25,9 +25,12 @@
                         </div>
                          <!--   -->
                         <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-4">
-                          <span style="margin-top: 5%;color: #5c6e7a;font-weight:bold;">工号:</span>
+                          <span style="margin-top: 5%;color: #5c6e7a;font-weight:bold;">科室:</span>
                           <label style="margin-top: 5%;">
-                            <input type="text" v-model="code" class="form-control" />
+                            <select class="form-control" v-model="deptId">
+                              <option value=''>所有科室</option>
+                              <option  v-for="dept in depts" :value='dept.id' :key="dept.deptId" >{{ dept.name }}</option>
+                            </select>
                           </label>
                         </div>
                         <div class="form-group col-lg-3 col-md-3 col-sm-12 col-xs-12">
@@ -36,6 +39,9 @@
                           </button>
                           <button type="button" style="margin-top: 5%;" class="btn btn-primary" @click="refresh">
                             <i class="fa fa-refresh"></i> 刷新
+                          </button>
+                          <button type="button" style="margin-top: 5%;" class="btn btn-danger" @click="showScore(userId)">
+                            <i class="fa fa-terminal"></i> 绩效自评
                           </button>
                         </div>
                       </div>
@@ -46,6 +52,9 @@
               </div>
             </div>
             <div class="row">
+              <div v-if="userinfo.length === 0" style="color: #000000;margin-left: 3%;">
+                未查找到相应人员
+              </div>
               <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6" v-for="user in userinfo" :key="user.code">
                 <div class="main-box clearfix profile-box-contact">
                   <div class="main-box-body clearfix">
@@ -71,18 +80,18 @@
                     </div>
                     <div class="profile-box-footer clearfix">
                       <div class="margin-10" style="margin-left:5%;">
-                        <button type="button" class="btn btn-primary " style="background-color:green" @click="showLog(user.id,user.name)">
+                        <button type="button" class="btn btn-primary " style="background-color:green" @click="showScore(user.id)">
                           <i class="fa fa-wrench"></i>
-                          指标考评
+                          绩效考评
                         </button>
 <!--                         <button type="button" class="btn btn-primary " @click="showLog(user.id,user.name)">
                           <i class="fa fa-wrench"></i>
                           查看日志
                         </button> -->
-                        <button type="button" class="btn btn-warning" @click="showScore(user.id)">
-                          <i class="fa fa-unlock-alt"></i>
-                          查看历史考评
-                        </button>
+                        <!--<button type="button" class="btn btn-warning" @click="showScore(user.id)">-->
+                          <!--<i class="fa fa-unlock-alt"></i>-->
+                          <!--查看历史考评-->
+                        <!--</button>-->
                       </div>
                     </div>
                   </div>
@@ -111,6 +120,7 @@
       return {
         msg:"",
         userinfo: [],
+        userid:'',//登陆人自己
         pageIndex: 0,
         size: 999,
         name:'',
@@ -127,8 +137,9 @@
     },
     methods: {
       init: function () {
-        this.deptId = sessionStorage.getItem("user_dept");
+        this.userId = sessionStorage.getItem("userid");
         this.getUserInfo();
+        this.getDept();
       },
       getUserInfo: function () {
         const that = this;
@@ -147,6 +158,14 @@
           console.log(error);
         });
       },
+      getDept:function () {
+        const that = this;
+        that.$http.get(global.appCtx + '/dept/findAllDept').then(function (response) {
+          this.depts = response.data;
+        },function (error) {
+          console.log(error);
+        });
+      },
       refresh: function () {
         this.name = '';
         this.code = '';
@@ -154,7 +173,7 @@
       },
       showLog:function (id,name) {
         this.$router.push({
-          path: '/ShowLog',
+          path: '/AddScore',
           query: {
             id: id ,
             name: name
@@ -163,7 +182,7 @@
       },
       showScore:function (id) {
         this.$router.push({
-          path: '/ShowScore',
+          path: '/AddScore',
           query: {
             id: id
           }

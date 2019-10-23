@@ -5,7 +5,7 @@
         <div class="row">
           <div class="col-lg-12">
             <ol class="breadcrumb">
-              <li><a href="indexpage">首页</a></li>
+              <li><a href="/">首页</a></li>
               <li class="active"><span>任务管理</span></li>
             </ol>
           </div>
@@ -209,7 +209,6 @@
             'name': this.name,
             'deptid': this.deptId,
             // 'code': this.code,
-
             'state': this.state
           }
         };
@@ -249,9 +248,9 @@
       },
       refresh: function () {
         this.name = '';
-        this.code = '';
-        this.dr = '';
         this.deptId='';
+        this.state = '';
+        this.deptUserId ='';
         this.getPojs();
       },
       modifiy: function (id) {

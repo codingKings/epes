@@ -24,14 +24,57 @@ public class PerformanceScore extends BaseEntity{
     @Column(name = "id", type = MySqlTypeConstant.CHAR, isKey = true, length = 36)
     private String id ;
 
-    @Column(name = "progressScore", type = MySqlTypeConstant.VARCHAR,isNull = false)
+    /**
+     * 进度评分 0：提前 1：正常 2：搁置
+     */
+    @Column(name = "progressScore", type = MySqlTypeConstant.VARCHAR)
     private String progressScore;
 
-    @Column(name = "qualityScore", type = MySqlTypeConstant.VARCHAR,isNull = false)
+    /**
+     *  质量评分 0：好 1：中 2：差
+     */
+    @Column(name = "qualityScore", type = MySqlTypeConstant.VARCHAR)
     private String qualityScore;
 
     /**
-     * 类型：0为自评；1为他评
+     * 专业素质 0：优 1：良 2：中 3：差
+     */
+    @Column(name = "professionScore", type = MySqlTypeConstant.VARCHAR)
+    private String professionScore;
+
+
+    /**
+     * 敬业精神 0：优 1：良 2：中 3：差
+     */
+    @Column(name = "dedicationScore", type = MySqlTypeConstant.VARCHAR)
+    private String dedicationScore;
+
+    /**
+     * 主动担当 0：优 1：良 2：中 3：差
+     */
+    @Column(name = "dutyScore", type = MySqlTypeConstant.VARCHAR)
+    private String dutyScore;
+
+    /**
+     * 工作成交 0：优 1：良 2：中 3：差
+     */
+    @Column(name = "businessScore", type = MySqlTypeConstant.VARCHAR)
+    private String businessScore;
+
+    /**
+     * 创新能力 0：优 1：良 2：中 3：差
+     */
+    @Column(name = "innovationScore", type = MySqlTypeConstant.VARCHAR)
+    private String innovationScore;
+
+    /**
+     * 团结协作 0：优 1：良 2：中 3：差
+     */
+    @Column(name = "teamScore", type = MySqlTypeConstant.VARCHAR)
+    private String teamScore;
+
+    /**
+     * 类型：0为任务进度评价；1为综合评价;
      */
     @Column(name = "type", type = MySqlTypeConstant.VARCHAR,isNull = false)
     private String type;
@@ -46,17 +89,31 @@ public class PerformanceScore extends BaseEntity{
     private Integer dr;
 
     /**
-     * 关联日志
+     * 关联任务
      */
-    @Column(name = "logid", type = MySqlTypeConstant.VARCHAR,isNull = false)
-    private String logid;
+    @Column(name = "pojid", type = MySqlTypeConstant.VARCHAR)
+    private String pojid;
 
     /**
      * 关联评分人
      */
-    @Column(name = "userid", type = MySqlTypeConstant.VARCHAR)
+    @Column(name = "scoreUserid", type = MySqlTypeConstant.VARCHAR, isNull = false)
+    private String scoreUserid;
+
+    /**
+     * 关联被评分人
+     */
+    @Column(name = "userid", type = MySqlTypeConstant.VARCHAR, isNull = false)
     private String userid;
 
     @Column(name = "username", type = MySqlTypeConstant.VARCHAR)
     private String username;
+
+    /**
+     * 评价月份
+     */
+    @Column(name = "scoreDate", type = MySqlTypeConstant.VARCHAR,length = 9,isNull = false)
+    private String scoreDate;
+
+
 }
