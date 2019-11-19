@@ -6,6 +6,7 @@ import router from './router'
 import $ from 'jquery'
 import VueResource from 'vue-resource'
 import echarts from 'echarts'
+import axios from 'axios'
 
 Vue.prototype.$echarts = echarts
 Vue.use(VueResource);
@@ -14,6 +15,7 @@ Vue.use($);
 
 Vue.config.productionTip = false;
 Vue.http.options.emulateJSON = true;
+Vue.prototype.$axios=axios;
 Vue.http.options.headers = {
   'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
 };

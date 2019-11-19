@@ -4,6 +4,7 @@ import com.epes.demo.entity.UserInfo;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author 程龙
@@ -26,4 +27,20 @@ public interface UserInfoDao {
 
     @Select("select id,name,code from demo_user_info")
     List<UserInfo> findAllUser();
+
+    @Select("SELECT " + 
+        "ui.id,ui.name,ui.deptid," + 
+        "CASE " + 
+        "WHEN EXISTS (" + 
+        "SELECT " + 
+        "ps.scoreUserid " + 
+        "FROM `demo_performance_score` ps " + 
+        "WHERE ps.createtime LIKE CONCAT('%',#{curdate},'%') " + 
+        "AND ps.userid= #{userId} " + 
+        "AND ui.id = ps.`scoreUserid` ) " + 
+        "THEN 'Y' " + 
+        "ELSE 'N' " + 
+        "END 'isScore'" + 
+        "FROM demo_user_info ui")
+    List<Map<String, Object>> findAllUserIsScore(@Param("userId")String userId,@Param("curdate")String curdate);
 }

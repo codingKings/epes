@@ -1,11 +1,17 @@
 package com.epes.demo.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.epes.demo.entity.PerformanceScore;
-import com.epes.demo.entity.Project;
-import com.epes.demo.entity.UserInfo;
-import com.epes.demo.service.PerformanceScoreService;
-import com.epes.demo.service.UserInfoService;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +22,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import sun.misc.Perf;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.alibaba.fastjson.JSONObject;
+import com.epes.demo.entity.Excels;
+import com.epes.demo.entity.PerformanceScore;
+import com.epes.demo.entity.UserInfo;
+import com.epes.demo.service.ExcelService;
+import com.epes.demo.service.PerformanceScoreService;
+import com.epes.demo.service.UserInfoService;
+
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
 
 /**
 * @author 程龙
@@ -35,12 +48,14 @@ public class ScoreController {
     private final PerformanceScoreService scoreService;
     private final UserInfoService userInfoService;
     private final JdbcTemplate jdbcTemplate;
+    private final ExcelService excelService;
 
     @Autowired
-    public ScoreController(PerformanceScoreService scoreService, UserInfoService userInfoService, JdbcTemplate jdbcTemplate) {
+    public ScoreController(PerformanceScoreService scoreService, UserInfoService userInfoService, JdbcTemplate jdbcTemplate,ExcelService excelService) {
         this.scoreService = scoreService;
         this.userInfoService = userInfoService;
         this.jdbcTemplate = jdbcTemplate;
+        this.excelService = excelService;
     }
 
     @PostMapping(value = "/addScore")
@@ -53,6 +68,7 @@ public class ScoreController {
                                String professionScore, String dedicationScore,
                                String dutyScore, String businessScore,
                                String innovationScore, String teamScore,
+                               String evaluate,
                                String logDate){
         JSONObject result = new JSONObject();
         try{
@@ -89,6 +105,7 @@ public class ScoreController {
             score.setDutyScore(dutyScore);
             score.setInnovationScore(innovationScore);
             score.setTeamScore(teamScore);
+            score.setEvaluate(evaluate);
             score.setScoreUserid(logUserid);
             score.setScoreDate(logDate);
             score.setType("1");
@@ -150,7 +167,7 @@ public class ScoreController {
             if (startDate != null){
                 poj.put("startdate",df.format(startDate));
             }
-
+            
             if (endDate != null ){
                 poj.put("enddate",df.format(endDate));
             }
@@ -158,5 +175,132 @@ public class ScoreController {
 
         return projectList;
     }
+    
+    /**
+     * 查询当前用户当月的考评其他某个人的绩效评分
+     * @param user:当前登录的用户id
+     * @param userid：查询被考评人的id
+     * @param date:月评总评对象所属的日期
+     * @return
+     */
+    @PostMapping(value = "/findScoreById")
+    @ResponseBody
+    public List<Map<String,String>> findScoreById(String user,String userid,String date){ 
+        List<PerformanceScore> list = scoreService.findScoreById(user,userid,date);      
+        List<Map<String,String>> scores = new ArrayList<Map<String,String>>();        
+        //任务评分集合
+        Map<String,String> mapScorePoj = null;        
+        //个人评分集合
+        Map<String,String> mapScorePer = null; 
+        //评分总集合        
+        for(PerformanceScore pfs:list) {
+            if(StringUtils.isNotBlank(pfs.getPojid())) {
+                mapScorePoj = new HashMap<String,String>();
+                mapScorePoj.put("pojid", pfs.getPojid());
+                mapScorePoj.put("progressScore",pfs.getProgressScore());
+                mapScorePoj.put("qualityScore", pfs.getQualityScore());
+                scores.add(mapScorePoj);
+                mapScorePoj=null;
+            }else {
+                mapScorePer = new HashMap<String,String>() ;
+                mapScorePer.put("scoreUserid", pfs.getScoreUserid());
+                mapScorePer.put("professionScore", pfs.getProfessionScore());
+                mapScorePer.put("dedicationScore", pfs.getDedicationScore());
+                mapScorePer.put("dutyScore", pfs.getDutyScore());
+                mapScorePer.put("businessScore", pfs.getBusinessScore());
+                mapScorePer.put("innovationScore", pfs.getInnovationScore());
+                mapScorePer.put("teamScore", pfs.getTeamScore());
+                mapScorePer.put("evaluate", pfs.getEvaluate());
+                scores.add(mapScorePer);
+                mapScorePer=null;
+            }
+        }
+        /*
+         * for(PerformanceScore pfs:list) {
+         * //map.put(pfs.getPojid(), value)
+         * if(StringUtils.isNotBlank(pfs.getPojid())) {
+         * i++;
+         * System.out.println(i);
+         * mapScorePoj = new HashMap<String,String>();
+         * mapScorePoj.put("pojid", pfs.getPojid());
+         * mapScorePoj.put("progressScore", pfs.getProgressScore());
+         * mapScorePoj.put("qualityScore", pfs.getQualityScore());
+         * map.put("poj"+i, mapScorePoj);
+         * mapScorePoj=null;
+         * }else {
+         * mapScorePer = new HashMap<String,String>() ;
+         * mapScorePer.put("scoreUserid", pfs.getScoreUserid());
+         * mapScorePer.put("professionScore", pfs.getProfessionScore());
+         * mapScorePer.put("dedicationScore", pfs.getDedicationScore());
+         * mapScorePer.put("dutyScore", pfs.getDutyScore());
+         * mapScorePer.put("businessScore", pfs.getBusinessScore());
+         * mapScorePer.put("innovationScore", pfs.getInnovationScore());
+         * mapScorePer.put("teamScore", pfs.getTeamScore());
+         * mapScorePer.put("evaluate", pfs.getEvaluate());
+         * 
+         * map.put("respondents",mapScorePer);
+         * mapScorePer = null;
+         * }
+         * 
+         * }
+         */
+        return scores;
+    }
+    
+    @PostMapping(value = "putExcel")
+    public void putExcel(HttpServletResponse response){
+        List<Excels> excels = excelService.QueryExcel();
+    Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("市工信局执行力建设实绩评价月统计台账","Sheet1"), Excels.class, excels );
+    try {
+        export(response, workbook, "pingjia");
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    }
 
+    /**
+     * 导出excel对象
+     *
+     * @param response httpResponse对象
+     * @param workbook workBook对象
+     * @param fileName 导出文件名
+     * @throws Exception 异常抛出
+     */
+    public static void export(HttpServletResponse response, Workbook workbook, String fileName) throws Exception {
+        response.reset();
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".xls");
+
+        ServletOutputStream outStream = null;
+        try {
+            outStream = response.getOutputStream();
+            workbook.write(outStream);
+        } finally {
+            workbook.close();
+            //outStream.close();
+        }
+    }
+    
+    
+    @PostMapping(value = "/getSelfProgress")
+    @ResponseBody
+    public List<Map<String,String>> getSelfProgress(String pojid,String userid,String startDate,String endDate){
+        System.out.println("userid:------------>"+userid);
+        System.out.println("startDate:-------------->"+startDate);
+        System.out.println("endDate:------------>"+endDate);
+        System.out.println("pojid:----------->"+pojid);
+        List<PerformanceScore> list = scoreService.getSelfProgress(pojid,userid,startDate,endDate);
+        Map<String,String> map = null;
+        List<Map<String,String>> listProgressScores = new ArrayList<Map<String,String>>();
+        for(PerformanceScore pfs : list) {
+            map = new HashMap<String,String>();
+            map.put("pojid", pfs.getPojid());
+            map.put("progressScore", pfs.getProgressScore());
+            map.put("qualityScore", pfs.getQualityScore());
+            listProgressScores.add(map);
+            map = null;
+        }
+        return listProgressScores;
+    }
 }

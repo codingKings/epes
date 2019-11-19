@@ -49,4 +49,8 @@ public interface WorkLogDao {
     List<WorkLog> findLogByUserId(@Param("userid") String userid, @Param("pojid") String pojid,
                                   @Param("startdate") String startdate, @Param("enddate") String enddate);
 
+    @Select("SELECT pojid,progress,question FROM demo_worklog WHERE userid= #{userid} and logDate = #{logDate}")
+    List<WorkLog> finLogsByPojOfUser(@Param("userid")String userid, @Param("logDate")String logDate);
+    
+
 }

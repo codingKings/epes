@@ -63,13 +63,14 @@
                 <div class="main-box clearfix profile-box-contact">
                   <div class="main-box-body clearfix">
                     <div class="profile-box-header gray-bg clearfix">
-                      <img src="../../../static/img/samples/user.jpg" alt=""
-                           class="profile-img img-responsive"/>
+                      <!-- <img src="../../../static/img/samples/user.jpg" alt=""
+                           class="profile-img img-responsive"/> -->
                       <h2>{{ user.name }}</h2>
                       <div class="job-position">
-                        {{ user.deptName }} , {{ user.sex }}
+                        {{ user.deptName }} 
+                        <!-- , {{ user.sex }} -->
                       </div>
-                      <ul class="contact-details">
+                      <!-- <ul class="contact-details">
                         <li>
                           <i class="fa fa-map-marker"></i> {{ user.address }}
                         </li>
@@ -80,7 +81,7 @@
                         <li>
                           <i class="fa fa-phone"></i> {{ user.phone }}
                         </li>
-                      </ul>
+                      </ul> -->
                     </div>
                     <div class="profile-box-footer clearfix">
                       <div class="margin-10" style="margin-left:5%;">
@@ -125,7 +126,7 @@
         msg:"",
         userinfo: [],
         pageIndex: 0,
-        size: 20,
+        size: 50,
         name:'',
         deptId:'',
         code:'',

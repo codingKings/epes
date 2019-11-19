@@ -55,6 +55,8 @@ public class ProjectService {
         return result;
     }
 
+    
+    
     @Transactional
     public Map<String, String> delete(String id ){
         Map<String, String> result = new HashMap<>(0);
@@ -83,6 +85,21 @@ public class ProjectService {
         return map;
     }
 
+    @Transactional
+    public Map<String, String> updateText(Project project) {
+        // TODO Auto-generated method stub
+        int p = baseService.update(project);
+        Map<String,String> map = new HashMap<>(0);
+        if (p>0){
+            map.put("msg","修改成功");
+            map.put("success","success");
+        }else {
+            map.put("msg","数据不存在或数据无法修改");
+            map.put("success","error");
+        }
+        return null;
+    }
+    
     public List<Map<String, Object>> findAllByPage(PageRequest pageRequest, SearchParams searchParams){
         return baseService.pageFindByCondition(Project.class, pageRequest, searchParams);
     }
@@ -116,5 +133,6 @@ public class ProjectService {
     public List<ProjectType> findSubPojType(String pojTypeCode){
         return projectTypeDao.findSubPojType(pojTypeCode);
     }
+
 
 }

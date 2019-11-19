@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import Echarts from '@/components/Echarts'
+import Echarts2 from '@/components/Chart/Echarts2'
 import Test from '@/components/Test'
 import IndexPage from "@/components/IndexPage"
 import Table1 from "@/components/Table"
@@ -22,16 +23,23 @@ import AddLog from "@/components/WorkLog/AddLog"
 import Performance from "@/components/Performance/Index"
 import AddScore from "@/components/Performance/AddScore"
 import ShowScore from "@/components/Performance/ShowScore"
+import LookEverything from "@/components/Kpi/LookEverything"
 
 Vue.use(Router)
 
 export default new Router({
+  
   routes: [
 
     {
       path: "/Echarts",
       name: "Echarts",
       component: Echarts
+    },
+    {
+      path: "/Echarts2",
+      name: "Echarts2",
+      component: Echarts2
     },
     {
       path: '/',
@@ -136,6 +144,11 @@ export default new Router({
       path: "/ShowScore",
       name: "ShowScore",
       component: ShowScore
+    },
+    {
+      path: "/LookEverything",
+      name: "LookEverything",
+      component: LookEverything
     }
   ]
 })

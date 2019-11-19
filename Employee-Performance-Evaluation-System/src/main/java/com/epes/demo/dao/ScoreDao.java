@@ -27,4 +27,11 @@ public interface ScoreDao {
     @Select("select * from demo_performance_score where scoreDate= #{scoreDate} and type = '1' and scoreUserid = #{scoreUserid} and userid = #{userid} ")
     PerformanceScore findScoreByUser(@Param("scoreDate") String scoreDate,@Param("scoreUserid")String scoreUserid,
                                             @Param("userid") String userid);
+
+    @Select("select * from demo_performance_score where scoreDate = #{date} and scoreUserid=#{userid} and userid = #{user}")
+    List<PerformanceScore> findScoreById(@Param("user")String user, @Param("userid")String userid, @Param("date")String date);
+
+    @Select("SELECT pojid, progressScore ,qualityScore FROM demo_performance_score WHERE pojid = #{pojid} AND scoreDate " + 
+        "BETWEEN #{startDate} AND #{endDate} AND userid = #{userid} AND progressScore IS NOT NULL ORDER BY SCOREdate ASC ")
+    List<PerformanceScore> getSelfProgress(@Param("pojid") String pojid,@Param("userid")String userid,@Param("startDate") String startDate,@Param("endDate") String endDate);
 }

@@ -113,4 +113,10 @@ public class Project extends BaseEntity {
      */
     private String parent_code;
     private String parent_name;
+    
+    /**
+     * 审批意见
+     */
+    @Column(name = "comments", type = MySqlTypeConstant.VARCHAR)
+    private String comments;
 }

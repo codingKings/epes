@@ -18,7 +18,7 @@ public interface DepartmentDao {
     @Select("select * from demo_department where id = #{id}")
     Department findDept(String id);
 
-    @Select("select * from demo_department ")
+    @Select("select * from demo_department order by code asc")
     List<Department> findAllDept();
 
     @Select("select d.id,d.name,d.code,d.createtime,d.modifiedtime,u.id,u.name,u.phone,u.code " +

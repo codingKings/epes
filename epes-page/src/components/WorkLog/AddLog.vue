@@ -91,7 +91,7 @@
                           <label
                             class="col-lg-1 control-label">进展情况：</label>
                           <div class="col-lg-11">
-                            <textarea v-model="progress" class="form-control" rows="4"></textarea>
+                            <textarea v-model="progress" value="${progress}" class="form-control" rows="4"></textarea>
                           </div>
                         </div>
 
@@ -99,7 +99,7 @@
                           <label
                             class="col-lg-1 control-label">问题及原因分析：</label>
                           <div class="col-lg-11">
-                            <textarea v-model="question" class="form-control" rows="4"></textarea>
+                            <textarea v-model="question" value="${question}" class="form-control" rows="4"></textarea>
                           </div>
                         </div>
 
@@ -274,6 +274,7 @@
       }
     },
     mounted: function () {
+      this.getLog();
       this.userid = sessionStorage.getItem("userid");
       this.$nextTick(function () {
         this.init();

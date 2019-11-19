@@ -110,4 +110,10 @@ public class WorkLogService {
     public WorkLog findByData(String pojId,String userid,String date) {
         return workLogDao.findLogByDate(pojId,userid,date);
     }
+
+    
+    public List<WorkLog> finLogsByPojOfUser(String userid, String logDate) {
+        // TODO Auto-generated method stub
+        return workLogDao.finLogsByPojOfUser( userid, logDate);
+    }
 }

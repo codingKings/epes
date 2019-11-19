@@ -4,7 +4,7 @@
       <div class="col-lg-12 col-xs-12" v-if="pojs.length <= 0">
         <label class="col-lg-2 control-label" style="color: red;">未查询到该月的任务列表</label>
       </div>
-      <div class="col-lg-12" v-for="(poj,index) in pojs">
+      <div class="col-lg-12" v-for="(poj,index) in pojs" :key="poj.pojid">
         <div class="main-box">
           <header class="main-box-header clearfix">
             <h2>任务详情</h2>
@@ -29,17 +29,18 @@
               </div>
             </div>
             <div class="form-group col-lg-6 col-xs-12">
-              <label class="col-lg-2 control-label">开始时间：</label>
+              <label class="col-lg-2 control-label">日期：</label>
               <div class="col-lg-10">
-                <label>{{ poj.startdate }}</label>
+                <!-- <label>{{ poj.startdate }}</label> -->
+                <label>1~{{curMonth}} 月份</label>
               </div>
             </div>
-            <div class="form-group col-lg-6 col-xs-12">
+            <!-- <div class="form-group col-lg-6 col-xs-12">
               <label class="col-lg-2 control-label">结束时间：</label>
               <div class="col-lg-10">
                 <label>{{ poj.enddate }}</label>
               </div>
-            </div>
+            </div> -->
             <div class="form-group col-lg-6 col-xs-12">
               <label
                 class="col-lg-2 control-label">任务类型：</label>
@@ -68,7 +69,7 @@
             </div>
             <div class="form-group col-lg-12 col-xs-12">
               <label
-                class="col-lg-1 control-label">任务描述：</label>
+                class="col-lg-1 control-label">年度任务：</label>
               <div class="col-lg-11">
                 <textarea v-model="poj.content" class="form-control" rows="3" disabled></textarea>
               </div>
@@ -76,7 +77,7 @@
 
             <div class="form-group col-lg-12 col-xs-12">
               <label
-                class="col-lg-1 control-label">任务要求：</label>
+                class="col-lg-1 control-label">目标要求：</label>
               <div class="col-lg-11">
                 <textarea v-model="poj.demand" class="form-control" rows="4" disabled></textarea>
               </div>
@@ -90,7 +91,7 @@
               <input type="text" name="pojId" :id="poj.id" v-model="pojid[index]=poj.id" hidden >
               <input type="text" name="pojName" v-model="pojname[index]=poj.name" hidden >
               <header class="main-box-header clearfix">
-                <h2>日志填报</h2>
+                <h2>任务进度情况填报</h2>
               </header>
               <div class="form-group col-lg-12 col-xs-12">
                 <label
@@ -109,7 +110,7 @@
               </div>
 
               <!--任务自评-->
-             <!-- <header class="main-box-header clearfix">
+              <!-- <header class="main-box-header clearfix">
                 <h2>任务自评</h2>
               </header>
               <input type="text" id="pojId" v-model="pojid[index]=poj.id" hidden >
@@ -149,12 +150,59 @@
                     <label :for="poj.id+'qualityScore'+3"> 差 </label>
                   </div>
                 </div>
-              </div>-->
+              </div>  -->
+
+              <!-- <header class="main-box-header clearfix">
+                <h2>该任务在整个任务的进度</h2>
+              </header>
+              <input type="text" id="pojId" v-model="pojid[index]=poj.id" hidden />
+              <div class="form-group col-lg-6 col-xs-12">
+                <label
+                  class="col-lg-5 control-label">请选择该任务进度代表的颜色：</label>
+                <div class="col-lg-7">
+                    <div class="radio radio-inline" style="margin-top: 0;">
+                    <input type="radio" :id="poj.id+'progressScore'+1" v-model="progressScore[index]" value="0" :name="poj.id+'progressScore'"
+                           checked>
+                    <label :for="poj.id+'progressScore'+1"> 蓝色 </label>
+                  </div>
+                  <div class="radio radio-inline">
+                    <input type="radio" :id="poj.id+'progressScore'+2" v-model="progressScore[index]" value="1" :name="poj.id+'progressScore'">
+                    <label :for="poj.id+'progressScore'+2"> 黄色 </label>
+                  </div>
+                  <div class="radio radio-inline">
+                    <input type="radio" :id="poj.id+'progressScore'+3" v-model="progressScore[index]" value="2" :name="poj.id+'progressScore'">
+                    <label :for="poj.id+'progressScore'+3"> 红色 </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group col-lg-6 col-xs-12">
+                <label class="col-lg-5 control-label">请选择该任务质量代表的颜色：</label>
+                <div class="col-lg-7">
+                  <div class="radio radio-inline" style="margin-top: 0;">
+                    <input type="radio" :id="poj.id+'qualityScore'+1" v-model="qualityScore[index]" value="0" :name="poj.id+'qualityScore'" checked>
+                    <label :for="poj.id+'qualityScore'+1"> 蓝色 </label>
+                  </div>
+                  <div class="radio radio-inline">
+                    <input type="radio" :id="poj.id+'qualityScore'+2" v-model="qualityScore[index]" value="1" :name="poj.id+'qualityScore'">
+                    <label :for="poj.id+'qualityScore'+2"> 黄色 </label>
+                  </div>
+                  <div class="radio radio-inline">
+                    <input type="radio" :id="poj.id+'qualityScore'+3" v-model="qualityScore[index]" value="2" :name="poj.id+'qualityScore'">
+                    <label :for="poj.id+'qualityScore'+3"> 红色 </label>
+                  </div>
+                </div>
+              </div> 
+              <div class="col-lg-12 col-xs-12 text-center " style="padding: 10px;margin:40px" >
+                <label class="col-lg-10 control-label" style="color: red;" >任务进度蓝色代表提前，黄色代表正常，红色代表滞后；任务质量蓝色代表好，黄色代表一般，红色代表差</label><br>
+                
+              </div> -->
+
             </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-12 col-xs-12 text-center main-box" style="padding: 10px;">
+      <div class="col-lg-12 col-xs-12 text-center main-box" style="padding: 10px;height:80px">
         <label class="col-lg-4 control-label" style="color: red;" v-if="limitDateState === 1">日志填报时间为每月{{limitDate}}号至月底</label>
         <button type="button" class="btn btn-success " v-if="pojs.length > 0" @click="submit" :disabled="limitDateState === 1">提交</button>
         <!--<button type="button" class="btn btn-info" @click="goBack">返回</button>-->
@@ -184,16 +232,19 @@
         pojname:[],
         progress: [],//进展情况
         question: [],//问题及原因
-        //progressScore: [], //进度评分
-        //qualityScore: [],//质量评分
+        progressScore: [], //进度评分
+        qualityScore: [],//质量评分
         userid: '',
         logs: [],
         nowDate: '',
         limitDateState: 0, //是否在日期限制，0为可编辑日志，1为不可编辑日志
-        limitDate: ''
+        limitDate: '',
+        curMonth:new Date().getMonth()+1
       }
     },
     mounted: function () {
+
+      //this.getLog();
       this.userid = sessionStorage.getItem("userid");
       //时间校验，判断是否到达日志填报日期
       this.limitDate = global.performance_reporting_time;
@@ -244,20 +295,35 @@
         }
         const data = {
           'userid': this.userid,
-          'pojids': this.pojid,
+          //'pojids': this.pojid,
           'logDate' : dateSrc
         };
         that.$http.post(global.appCtx + '/worklog/findLogsByPojOfUser', data).then(function (response) {
-          var log = response.data.data;
-          for (var i=0;i<log.length;i++){
-            var pid = log[i].pojid;
-            for (var j=0;j<that.pojid.length;j++){
-              if (pid === that.pojid[j]) {
-                this.progress[j] = log[i].progress;
-                this.question[j] = log[i].question;
+          var log = response.data;
+          if(log.length !==0 && this.pojs.length !==0 ){
+            for(var i=0;i<log.length;i++){
+              for(var j=0;j<this.pojs.length;j++){
+                if(this.pojs[j].id ===log[i].pojid){
+                  
+                  this.$set(this.progress,j,log[i].progress);
+                  this.$set(this.question,j,log[i].question);
+                  
+                  // this.progress[j] = log[i].progress;
+                  // this.question[j] = log[i].question;
+                }
               }
             }
           }
+          // for (var i=0;i<log.length;i++){
+          //   var pid = log[i].pojid;
+          //   for (var j=0;j<that.pojid.length;j++){
+          //     if (pid === that.pojid[j]) {
+          //       this.progress[j] = log[i].progress;
+          //       this.question[j] = log[i].question;
+          //     }
+          //   }
+          // }
+          
           console.log(this.progress);
         }, function (error) {
           console.log(error);
@@ -272,6 +338,7 @@
       submit: function () {
         const that = this;
         //校验
+        
         const data = {
           'pojids': this.pojid,
           'userid': this.userid,
@@ -299,3 +366,4 @@
     }
   }
 </script>
+

@@ -138,6 +138,13 @@ public class UserInfoService {
     public List<UserInfo> findAllUsers(){
         return userInfoDao.findAllUser();
     }
+    
+    public List<Map<String, Object>> findAllUsersIsScore(PageRequest pageRequest,
+        SearchParams search, String userId,String curdate) {
+        // TODO Auto-generated method stub
+        
+        return userInfoDao.findAllUserIsScore(userId,curdate);
+    }
 
     /**
      * 删除用户
@@ -235,4 +242,7 @@ public class UserInfoService {
         }
         return new HashSet<>(applications);
     }
+
+
+   
 }

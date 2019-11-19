@@ -68,4 +68,12 @@ public class PerformanceScoreService {
     public List<PerformanceScore> findScoreByEmpid(String userid){
         return scoreDao.findScoreByEmpid(userid);
     }
+
+    public List<PerformanceScore> findScoreById(String user, String userid, String date) {
+        return scoreDao.findScoreById(user,userid,date);
+    }
+
+    public List<PerformanceScore> getSelfProgress(String pojid,String userid, String startDate, String endDate) {
+        return scoreDao.getSelfProgress(pojid,userid,startDate,endDate);
+    }
 }

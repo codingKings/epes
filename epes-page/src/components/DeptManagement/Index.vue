@@ -69,9 +69,9 @@
                     <li>
                       <i class="fa fa-map-marker"></i> 科长：{{ dept.userName }}
                     </li>
-                    <li>
+                    <!-- <li>
                       <i class="fa fa-phone"></i> 联系电话：{{ dept.userPhone }}
-                    </li>
+                    </li> -->
                   </ul>
                 </div>
                 <div class="profile-box-footer clearfix">

@@ -124,7 +124,9 @@ public class BaseService {
                         sqlVal.append(key).append("=").append(fieldMap.get(key)).append(",");
                     }
                 }
+               
                 sqlVal.deleteCharAt(sqlVal.length()-1);
+               
             }
             p = dao.update(tableName, sqlVal.toString(),fieldMap.get("id").toString());
         }else {
@@ -199,7 +201,7 @@ public class BaseService {
                 e.printStackTrace();
             }
         }
-        search.append( "order by createtime desc");
+        search.append( "order by createtime asc");
         return dao.pageFind(tableName, search.toString(), pageIndex, pageSize);
     }
 

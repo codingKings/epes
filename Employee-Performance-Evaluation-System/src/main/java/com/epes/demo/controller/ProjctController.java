@@ -111,6 +111,22 @@ public class ProjctController {
         return projectService.update(project);
     }
 
+    /**
+     * 审批意见
+     * @param project
+     * @return
+     */
+    @PostMapping(value = "/updatePojText")
+    @ResponseBody
+    public Map<String,String> updatePojText(String pojid,String state,String option){
+        Project project = new Project();
+        project.setId(pojid);
+        project.setState(state);
+        project.setComments(option);;
+        
+        return projectService.updateText(project);
+    }
+    
     @PostMapping(value = "/addPoj")
     @ResponseBody
     public Map<String , String > addPoj(Project project){

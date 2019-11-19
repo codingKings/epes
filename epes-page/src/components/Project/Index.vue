@@ -59,18 +59,20 @@
                         </select>
                       </label>
                     </div>
-                    <div class="form-group col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <div class="form-group col-lg-3 col-md-3 col-sm-12 col-xs-12" style="padding-bottom:20px">
                       <button type="button" style="margin-top: 5%;" class="btn btn-primary" @click="getPojs">
                         <i class="fa fa-search"></i> 搜索
                       </button>
                       <button type="button" style="margin-top: 5%;" class="btn btn-primary" @click="refresh">
                         <i class="fa fa-refresh"></i> 刷新
                       </button>
-
-
-                      <!--<button v-if="role == 1" type="button" style="margin-top: 5%;" class="btn btn-success" @click="addDept">-->
                         <button type="button" style="margin-top: 5%;" class="btn btn-success" @click="addDept">
                         <i class="fa fa-plus"></i> 新建
+                      </button>
+
+                      <!--<button v-if="role == 1" type="button" style="margin-top: 5%;" class="btn btn-success" @click="addDept">-->
+                        <button type="button" style="margin-top: 5%;" class="btn btn-success" @click="excl(event)">
+                        <i></i> 导出
                       </button>
                     </div>
                   </div>
@@ -84,10 +86,10 @@
           <div v-if="pojs.length === 0" style="color: #000000;margin-left: 3%;">
             未查找到相应任务
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12" v-for="poj in pojs" :key="poj.id" >
+          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12" style="margin-bottom: 35px;margin-top:-30px" v-for="poj in pojs" :key="poj.id" >
             <div class="main-box clearfix profile-box-contact " >
               <div class="main-box-body clearfix">
-                <div class="profile-box-header gray-bg clearfix" style="height: 220px;">
+                <div class="profile-box-header gray-bg clearfix" style="height: 220px;padding:0 20px;">
                   <h2>任务名称：{{ poj.name }}</h2><br/>
                   <h5>任务类型：
                     <label style="color:greenyellow;">{{poj.sub_type_name}}</label>
@@ -98,11 +100,11 @@
                   <label style="color:red;" v-if="poj.state ==='02'">审核不通过</label>
                   <ul class="contact-details">
                     <li>
-                      <i class="fa fa-eye"></i> 开始时间：{{ poj.startdate }}
+                      <i class="fa fa-eye"></i> 日期： <span>1~{{curDate}}月份</span>
                     </li>
-                    <li>
+                    <!-- <li>
                       <i class="fa fa-eye-slash"></i> 结束时间：{{ poj.enddate }}
-                    </li>
+                    </li> -->
                     <li> <!-- v-if="" -->
                       <i class="fa fa-flag"></i> 执 行 人 ：{{ poj.userName }}
                     </li>
@@ -179,9 +181,11 @@
         poj:[],
         dept:[],
         deptUsers:[],
-        role: 0
+        role: 0,
+        curDate:new Date().getMonth()
       }
     },
+    
     mounted: function () {
       //查找是否有新增权限
       var roles = sessionStorage.getItem("user_role");
@@ -198,6 +202,33 @@
         this.getDept();
         this.getPojs();
       },
+
+      excl: function (event) {
+        this.$axios({
+          method: 'post',
+          url: global.appCtx +'/score/putExcel',
+          headers:{
+            'Content-Type':'application/json'
+          },
+          responseType: 'blob'
+        }).then(function (res) {
+          const link = document.createElement('a')
+          let blob = new Blob([res.data],{type: 'application/vnd.ms-excel'});
+          link.style.display = 'none'
+          link.href = URL.createObjectURL(blob);
+          let num = '';
+          for(var i=0;i < 10;i++){
+            num += Math.ceil(Math.random() * 10)
+          }
+          link.setAttribute('download', '评分_' + num + '.xls')
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+        }).then(function (error) {
+          console.log(error)
+        })
+      },
+
       getPojs: function () {
         const that = this;
         this.userId = sessionStorage.getItem("userid");

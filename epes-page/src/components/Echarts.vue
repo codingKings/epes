@@ -10,7 +10,7 @@
               <header class="main-box-header clearfix">
                 <h2>饼图</h2>
               </header>
-              <div class="main-box-body clearfix">
+              <div class="main-box-body clearfix" >
                 <div id="pieChart"
                      style="height: 400px; padding: 0px; position: relative;"></div>
               </div>
@@ -19,7 +19,7 @@
           <div class="col-lg-6">
             <div class="main-box">
               <header class="main-box-header clearfix">
-                <h2>饼图</h2>
+                <h2>柱状图</h2>
               </header>
               <div class="main-box-body clearfix">
                 <div id="Histogram"
@@ -152,7 +152,7 @@
           xAxis : [
             {
               type : 'category',
-              data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+              data : ['1~1月份', '1~2月份', '1~3月份', '1~4月份', '1~5月份', '1~7月份', '1~8月份','1~9月份','1~10月份','1~11月份','1~12月份'],
               axisTick: {
                 alignWithLabel: true
               }

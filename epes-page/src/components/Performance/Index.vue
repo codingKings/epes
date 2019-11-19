@@ -40,9 +40,9 @@
                           <button type="button" style="margin-top: 5%;" class="btn btn-primary" @click="refresh">
                             <i class="fa fa-refresh"></i> 刷新
                           </button>
-                          <button type="button" style="margin-top: 5%;" class="btn btn-danger" @click="showScore(userId)">
+                          <!-- <button type="button" style="margin-top: 5%;" class="btn btn-danger" @click="showScore(userId)">
                             <i class="fa fa-terminal"></i> 绩效自评
-                          </button>
+                          </button> -->
                         </div>
                       </div>
 
@@ -55,17 +55,18 @@
               <div v-if="userinfo.length === 0" style="color: #000000;margin-left: 3%;">
                 未查找到相应人员
               </div>
-              <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6" v-for="user in userinfo" :key="user.code">
+              <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6"  v-for="user in userinfo" :key="user.code">
                 <div class="main-box clearfix profile-box-contact">
                   <div class="main-box-body clearfix">
                     <div class="profile-box-header gray-bg clearfix">
-                      <img src="../../../static/img/samples/user.jpg" alt=""
-                           class="profile-img img-responsive"/>
+                      <!-- <img src="../../../static/img/samples/user.jpg" alt=""
+                           class="profile-img img-responsive"/> --> 
                       <h2>{{ user.name }}</h2>
                       <div class="job-position">
-                        {{ user.deptName }} , {{ user.sex }}
+                        <label>科室：</label>{{ user.deptName }} 
+                        <!--, {{ user.sex }} -->
                       </div>
-                      <ul class="contact-details">
+                      <!-- <ul class="contact-details">
                         <li>
                           <i class="fa fa-map-marker"></i> {{ user.address }}
                         </li>
@@ -76,13 +77,13 @@
                         <li>
                           <i class="fa fa-phone"></i> {{ user.phone }}
                         </li>
-                      </ul>
+                      </ul> -->
                     </div>
                     <div class="profile-box-footer clearfix">
                       <div class="margin-10" style="margin-left:5%;">
-                        <button type="button" class="btn btn-primary " style="background-color:green" @click="showScore(user.id)">
+                        <button type="button" class="btn btn-primary "  :style="{'background-color':(user.isScore==='Y'? '#95A5A6':'green')}" @click="showScore(user.id,user.isScore)">
                           <i class="fa fa-wrench"></i>
-                          绩效考评
+                                                                                绩效考评
                         </button>
 <!--                         <button type="button" class="btn btn-primary " @click="showLog(user.id,user.name)">
                           <i class="fa fa-wrench"></i>
@@ -127,7 +128,8 @@
         deptId:'',
         code:'',
         depts:[],
-        deptModel:[]
+        deptModel:[],
+        isScore:''
       }
     },
     mounted: function () {
@@ -150,9 +152,11 @@
             'name': this.name,
             'deptid': this.deptId,
             'code': this.code
-          }
+          },
+          'userId':this.userId,
+          
         };
-        that.$http.post(global.appCtx + '/UserInfo/findUserBypage',data).then(function (response) {
+        that.$http.post(global.appCtx + '/UserInfo/findUserIsScoreBypage',data).then(function (response) {
           this.userinfo = response.data;
         },function (error) {
           console.log(error);
@@ -180,11 +184,12 @@
           }
         });
       },
-      showScore:function (id) {
+      showScore:function (id,isScore) {
         this.$router.push({
           path: '/AddScore',
           query: {
-            id: id
+            id: id,
+            isScore:isScore
           }
         });
       }

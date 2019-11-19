@@ -1,0 +1,37 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.epes.demo.dao.ExcelDao">
+    <resultMap id="Excel" type="com.epes.demo.entity.Excels">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <collection property="prijectList" ofType="com.epes.demo.entity.PojExcel"  >
+            <id property="jid" column="jid"/>
+            <result property="taskname" column="taskname"/>
+            <result property="content" column="content"/>
+            <result property="demand" column="demand"/>
+            <result property="progress" column="progress"/>
+            <result property="question" column="question"/>
+            <result property="progressScore" column="progressScore"/>
+            <result property="qualityScore" column="qualityScore"/>
+            <result property="progressScoreNumber0" column="progressScoreNumber0"/>
+            <result property="progressScoreNumber1" column="progressScoreNumber1"/>
+            <result property="progressScoreNumber2" column="progressScoreNumber2"/>
+            <result property="qualityScore0" column="qualityScore0"/>
+            <result property="qualityScore1" column="qualityScore1"/>
+            <result property="qualityScore2" column="qualityScore2"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryExcel" resultMap="Excel">
+        select
+        a.id,a.name,c.name as taskname,b.id as jid,b.content,b.demand,d.progress,d.question,e.progressScore,e.qualityScore,COUNT(case when progressScore =0 then '1' end) as 'progressScoreNumber0',COUNT(case when progressScore =1 then '1' end) as 'progressScoreNumber1',COUNT(case when progressScore =2 then '1' end) as 'progressScoreNumber2',COUNT(case when qualityScore =0 then '1' end) as 'qualityScore0',COUNT(case when qualityScore =1 then '1' end) as 'qualityScore1',COUNT(case when qualityScore =2 then '1' end) as 'qualityScore2'
+        from demo_user_info as a
+        LEFT JOIN demo_project as b on a.id = b.userid
+        LEFT JOIN demo_project_type as c on c.code = b.sub_type_code
+        LEFT JOIN demo_worklog as d on d.pojid = b.id
+        LEFT JOIN demo_performance_score as e on e.pojid = b.id
+        GROUP BY name,jid
+    </select>
+
+
+
+</mapper>

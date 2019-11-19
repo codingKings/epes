@@ -115,33 +115,58 @@ public class WorkLogController {
         return workLogService.findById(id);
     }
 
+    /*
+     * @PostMapping(value = "/findLogsByPojOfUser")
+     * 
+     * @ResponseBody
+     * public JSONObject findLogsByPojOfUser(String logDate,String userid,@RequestParam(value =
+     * "pojids[]")String[] pojids) {
+     * JSONObject result = new JSONObject();
+     * try {
+     * if (pojids!=null&&pojids.length>0){
+     * StringBuilder sql = new StringBuilder();
+     * sql.append("select id,pojid,progress,question,logDate from demo_worklog log ");
+     * Object[] param = new Object[pojids.length+2];
+     * sql.append("where log.pojid in(");
+     * for (int i=0; i<pojids.length;i++){
+     * sql.append("?");
+     * if (i!=pojids.length-1){
+     * sql.append(",");
+     * }
+     * param[i] = pojids[i];
+     * }
+     * sql.append(") and logDate = ? and log.userid = ? order by logDate asc");
+     * param[pojids.length] = logDate;
+     * param[pojids.length+1] = userid;
+     * List<Map<String, Object>> list = jdbcTemplate.queryForList(sql.toString(),param);
+     * result.put("data",list);
+     * 
+     * }
+     * }catch (Exception e){
+     * logger.error(e.getMessage());
+     * }
+     * return result;
+     * }
+     */
+    
     @PostMapping(value = "/findLogsByPojOfUser")
     @ResponseBody
-    public JSONObject findLogsByPojOfUser(String logDate,String userid,@RequestParam(value = "pojids[]")String[] pojids) {
-         JSONObject result = new JSONObject();
-        try {
-            if (pojids!=null&&pojids.length>0){
-                StringBuilder sql = new StringBuilder();
-                sql.append("select id,pojid,progress,question,logDate from demo_worklog log ");
-                Object[] param = new Object[pojids.length+2];
-                sql.append("where log.pojid in(");
-                for (int i=0; i<pojids.length;i++){
-                    sql.append("?");
-                    if (i!=pojids.length-1){
-                        sql.append(",");
-                    }
-                    param[i] = pojids[i];
-                }
-                sql.append(") and logDate = ? and log.userid = ? order by logDate asc");
-                param[pojids.length] = logDate;
-                param[pojids.length+1] = userid;
-                List<Map<String, Object>> list = jdbcTemplate.queryForList(sql.toString(),param);
-                result.put("data",list);
-            }
-        }catch (Exception e){
-            logger.error(e.getMessage());
+    public List<Map<String,String>> findLogsByPojOfUser(String userid,String logDate){
+        //获取当月该登录用户下的所有任务日志
+        List<WorkLog> listLog = workLogService.finLogsByPojOfUser(userid,logDate);
+        //把每个任务的日志封装到map集合里，再把每个任务的对象封装到list集合里
+        List<Map<String,String>> list=new ArrayList<Map<String,String>>();
+        Map<String,String> mapLog = null;
+        for(WorkLog log : listLog) {
+            mapLog=new HashMap<String,String>();
+            mapLog.put("pojid", log.getPojid());
+            mapLog.put("progress", log.getProgress());
+            mapLog.put("question", log.getQuestion());
+            list.add(mapLog);
+            mapLog=null;
         }
-        return result;
+        
+        return list;
     }
 
     @PostMapping(value = "/update")
@@ -164,10 +189,10 @@ public class WorkLogController {
     public JSONObject addLogs(String userid, @RequestParam(value = "pojids[]") String[] pojids,
                               @RequestParam(value = "pojnames[]") String[] pojnames,
                               @RequestParam(value = "progress[]") String[] progress,
-                              @RequestParam(value = "questions[]") String[] questions
+                              @RequestParam(value = "questions[]",required = false) String[] questions
 //            ,JSONArray progressScores,JSONArray qualityScores
     ) {
-
+        
         JSONObject result = new JSONObject();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
         try {
@@ -179,7 +204,12 @@ public class WorkLogController {
                 workLog.setUserid(user.getId());
                 workLog.setUsernmae(user.getName());
                 workLog.setProgress(progress[i]);
-                workLog.setQuestion(questions[i]);
+                if(questions==null||questions.length==0) {
+                    workLog.setQuestion("");
+                }else {
+                    
+                    workLog.setQuestion(questions[i]);
+                }
 
                 workLog.setLogDate(df.format(new Date()));
                 //保存自评

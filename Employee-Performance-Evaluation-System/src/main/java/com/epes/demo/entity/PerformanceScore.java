@@ -74,6 +74,11 @@ public class PerformanceScore extends BaseEntity{
     private String teamScore;
 
     /**
+     * 综合评价定级: 0：优 1：良 2：中 3：差
+     */
+    @Column(name = "evaluate", type = MySqlTypeConstant.VARCHAR)
+    private String evaluate;
+    /**
      * 类型：0为任务进度评价；1为综合评价;
      */
     @Column(name = "type", type = MySqlTypeConstant.VARCHAR,isNull = false)

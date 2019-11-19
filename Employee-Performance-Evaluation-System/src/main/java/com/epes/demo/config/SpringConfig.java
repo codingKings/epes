@@ -1,12 +1,15 @@
 package com.epes.demo.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
@@ -66,7 +69,10 @@ public class SpringConfig {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource());
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml"));
+        Resource[] resources = resolver.getResources("classpath:/mapper/*.xml");
+        Resource[] resources1 = resolver.getResources("classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml");
+        Resource[] resources2 = (Resource[]) ArrayUtils.addAll(resources, resources1);
+        sqlSessionFactoryBean.setMapperLocations(resources2);
         sqlSessionFactoryBean.setTypeAliasesPackage("com.example.entity.*");
         return sqlSessionFactoryBean;
     }

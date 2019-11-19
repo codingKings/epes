@@ -17,7 +17,7 @@
                 </select>
               </div>
               <div class="col-lg-10" v-else>
-                <div class="radio" v-for="pojType in pojTypes">
+                <div class="radio" v-for="pojType in pojTypes" :key="pojType.code">
                   <input type="radio" :id="pojType.id" v-model="pojTypeCode" :value='pojType.code' name="pojType">
                   <label :for="pojType.id"> {{ pojType.name }} </label>
                 </div>
@@ -46,7 +46,7 @@
                   v-if="(pojTypeCode !== '' && pojTypeCode !== null && pojTypeCode !== undefined ) && subTypes.length <= 0"
                   style="color: red;">该类型未配置子类，请联系管理员添加 </label>
 
-                <div class="radio" v-for="subType in subTypes">
+                <div class="radio" v-for="subType in subTypes" :key="subType.code">
                   <!--@click="setPojName(subType.name)"-->
                   <input type="radio" :id="subType.id" v-model="subTypeCode" :value='subType.code' name="subType">
                   <label :for="subType.id"> {{ subType.name }} </label>
@@ -109,7 +109,7 @@
 
             <div class="form-group col-lg-12 col-xs-12">
               <label
-                class="col-lg-1 control-label">任务要求：</label>
+                class="col-lg-1 control-label">目标要求：</label>
               <div class="col-lg-11">
                 <textarea v-model="demand" class="form-control" placeholder="请填写任务要求..." rows="4"></textarea>
               </div>

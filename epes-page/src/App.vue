@@ -38,7 +38,7 @@
                     </form>
                   </div>
                 </li>
-                <li class="dropdown hidden-xs">
+                <!-- <li class="dropdown hidden-xs">
                   <a class="btn dropdown-toggle" data-toggle="dropdown">
                     <i class="fa fa-warning"></i>
                     <span class="count">8</span>
@@ -91,7 +91,7 @@
                       </a>
                     </li>
                   </ul>
-                </li>
+                </li> 
                 <li class="dropdown hidden-xs">
                   <a class="btn dropdown-toggle" data-toggle="dropdown">
                     <i class="fa fa-envelope-o"></i>
@@ -154,16 +154,18 @@
                       </a>
                     </li>
                   </ul>
-                </li>
-                <li class="hidden-xs">
+                </li>-->
+                <!-- <li class="hidden-xs">
                   <a class="btn">
                     <i class="fa fa-cog"></i>
                   </a>
-                </li>
+                </li> -->
                 <li class="dropdown profile-dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <img src="../static/img/samples/scarlet-159.png" alt=""/>
-                    <span class="hidden-xs">{{ userInfo.name }}</span> <b class="caret"></b>
+                    <!-- <img src="../static/img/samples/scarlet-159.png" alt=""/> -->
+                    <img src="../static/img/samples/timgHeader.png" alt=""/>
+                    <!-- class="hidden-xs" -->
+                    <span >{{ userInfo.name }}</span> <b class="caret"></b>
                   </a>
                   <ul class="dropdown-menu">
                     <li><a href="#"><i class="fa fa-user"></i>修改个人信息</a></li>
@@ -187,7 +189,7 @@
             <section id="col-left" class="col-left-nano">
               <div id="col-left-inner" class="col-left-nano-content">
                 <div id="user-left-box" class="clearfix hidden-sm hidden-xs">
-                  <img alt="" src="../static/img/samples/scarlet-159.png"/>
+                  <img alt="" src="../static/img/samples/timgHeader.png"/>
                   <div class="user-box">
                     <span class="name">
                       {{ userInfo.name }}<br/>
@@ -199,8 +201,8 @@
                     </span>
                   </div>
                 </div>
-                <div class="collapse navbar-collapse navbar-ex1-collapse" id="sidebar-nav">
-                  <ul class="nav nav-pills nav-stacked" v-if="meun.pid != 0">
+                <div class="collapse navbar-collapse navbar-ex1-collapse" id="sidebar-nav" >
+                  <ul class="nav nav-pills nav-stacked" v-if="meun.pid != 0"  >
                     <li class="active">
                       <a href="/">
                         <i class="fa fa-dashboard"></i>
@@ -210,7 +212,7 @@
                     <li v-for="meun in meuns" :key="meun" >
                       <a  class="dropdown-toggle" :href="meun.url">
                         <i class="fa fa-table"></i>
-                        <span>{{meun.name}}</span>
+                        <span >{{meun.name}}</span>
                         <i class="fa fa-chevron-circle-right drop-icon"></i>
                       </a>
                     </li>
@@ -223,7 +225,7 @@
         </div>
       </div>
   </div>
-    <div id="config-tool" class="closed">
+    <!-- <div id="config-tool" class="closed">
     <a id="config-tool-cog">
       <i class="fa fa-cog"></i>
     </a>
@@ -308,7 +310,7 @@
         </li>
       </ul>
     </div>
-  </div>
+  </div> -->
   </div>
 </template>
 
@@ -324,12 +326,14 @@
         meuns:[],
         userid:"",
         meun:[],
-        meun2:[]
+        meun2:[],
+        
       }
     },
     mounted: function () {
       this.$nextTick(function () {
         this.init();
+      
       });
     },
     methods: {
@@ -337,13 +341,17 @@
         this.verification();
         this.getMenu();
       },
+      toggleShow:function(){
+        
+        
+      },
       verification:function(){
         var userid = this.$route.query.id;
         const that = this;
         if (userid === undefined || userid === null || userid === ""){
           userid = sessionStorage.getItem('userid');
           if (userid === undefined || userid === null || userid === ""){
-            alert("登陆已失效，请先登录！");
+            //alert("登陆已失效，请先登录！");
             window.location.href = global.appCtx;
           }
           this.getUserInfo(userid);

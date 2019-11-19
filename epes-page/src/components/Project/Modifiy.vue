@@ -75,6 +75,16 @@
                 <label>{{ poj.enddate }}</label>
               </div>
             </div>
+            
+            <div class="form-group col-lg-12 col-xs-12" v-if="poj.comments !==null &&
+             poj.comments !== 'null' && poj.comments !==undefined && poj.comments !==''">
+              <label
+                class="col-lg-1 control-label" >审核反馈：</label>
+              <div class="col-lg-11">
+                <textarea v-model="poj.comments" class="form-control" rows="3" disabled></textarea>
+              </div>
+            </div>
+
             <div class="form-group col-lg-12 col-xs-12">
               <label
                 class="col-lg-1 control-label">任务描述：</label>
@@ -85,7 +95,7 @@
 
             <div class="form-group col-lg-12 col-xs-12">
               <label
-                class="col-lg-1 control-label">任务要求：</label>
+                class="col-lg-1 control-label">目标要求：</label>
               <div class="col-lg-11">
                 <textarea v-model="poj.demand" class="form-control" rows="4" ></textarea>
               </div>

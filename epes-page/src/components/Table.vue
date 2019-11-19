@@ -3,7 +3,7 @@
     <input type="button" class="button" value="提交" id="get" @click="getAge"/>
 
     <ul>
-      <li v-for="itme in itmes">{{ itme.name }}</li>
+      <li v-for="itme in itmes" :key="itme.name">{{ itme.name }}</li>
     </ul>
   </div>
 </template>
